@@ -21,10 +21,11 @@ import org.junit.jupiter.api.Test
 class TodoListTest {
 
     @Nested
-    inner class todoPathTest {
+    inner class TodoPathTest {
         @Test
         fun`returns 200-ok on the root URI on a valid request`() {
-
+            val response = app(Request(GET, "/todo"))
+            assertEquals(OK, response.status)
         }
     }
 
