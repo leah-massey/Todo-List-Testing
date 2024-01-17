@@ -57,6 +57,25 @@ class TodoListTest {
             assertEquals(expected, actual)
         }
 
+        @Test
+        fun `todoList updated when item added`() {
+            val todoData = """
+            {
+                "id": 3,
+                "title": "buy a kitten",
+                "body": "make sure it's friendly",
+                "status": false
+            }
+        """.trimIndent()
+
+            app(Request(POST, "/todo").body(todoData))
+            val response  = app(Request(GET, "/todo"))
+            val expected: String = "[{\"id\":3,\"title\":\"buy a kitten\",\"body\":\"make sure it's friendly\",\"status\":false}]"
+            val actual: String = response.bodyString()
+
+            assertEquals(expected, actual)
+        }
+
         //        @Test
 //        fun`returns the list of todos`() {
 //            val response = app(Request(GET, "/todo"))
