@@ -30,14 +30,15 @@ val mapper = ObjectMapper().registerModule(KotlinModule())
 
 // list starts empty
 val toDoList: MutableList<TodoItem> = mutableListOf()
-//TodoItem(1, "clean flat", "notes on how to clean my flat", false), TodoItem(2, "go swimming", "don't forget goggles", status = false)
+//Draft list : TodoItem(1, "clean flat", "notes on how to clean my flat", false), TodoItem(2, "go swimming", "don't forget goggles", status = false)
 
 val app: HttpHandler = routes(
-
-    // view your task list as a json object string
+    // view task list as a json string
     "/todo" bind GET to {request: Request ->
         val toDoListAsJson: String = mapper.writeValueAsString(toDoList) // returns object as string
+
         val taskId: Int? = request.query("id")?.toInt()
+
         // if no query parameter, return entire list
         if (taskId == null) {
             Response(OK).body(toDoListAsJson)

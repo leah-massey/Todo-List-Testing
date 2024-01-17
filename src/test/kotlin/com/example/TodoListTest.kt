@@ -3,6 +3,7 @@ package com.example
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
+import netscape.javascript.JSObject
 import org.http4k.core.Body
 import org.http4k.core.ContentType.Companion.TEXT_HTML
 import org.http4k.core.Method.GET
@@ -27,6 +28,22 @@ class TodoListTest {
             val response = app(Request(GET, "/todo"))
             assertEquals(OK, response.status)
         }
+
+        @Test
+        fun`initially returns an empty list of todos`() {
+            val response = app(Request(GET, "/todo"))
+            val expected: String = "[]"
+            val actual = response.body.stream.reader().readText()
+            assertEquals(expected, actual)
+        }
+
+        //        @Test
+//        fun`returns the list of todos`() {
+//            val response = app(Request(GET, "/todo"))
+//            val expected: String = "[{\"id\":1,\"title\":\"clean flat\",\"body\":\"notes on how to clean my flat\",\"status\":false},{\"id\":2,\"title\":\"go swimming\",\"body\":\"don't forget goggles\",\"status\":false}]"
+//            val actual = response.body
+//            assertEquals(expected, actual)
+//        }
     }
 
     @Test
