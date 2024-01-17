@@ -56,7 +56,7 @@ val app: HttpHandler = routes(
         val newTodo = mapper.readValue(jsonString, TodoItem::class.java) // telling the object mapper to instantiate the ToDoItem class when it parses the jsonString
         toDoList.add(newTodo)
         val toDoAsJson = mapper.writeValueAsString(toDoList)
-        Response(OK).body("your todo has been added:\n ${toDoAsJson}" )
+        Response(OK).body("your todo has been added" )
     }
 
 

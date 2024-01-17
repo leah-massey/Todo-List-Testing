@@ -6,7 +6,9 @@ import com.natpryce.hamkrest.equalTo
 import netscape.javascript.JSObject
 import org.http4k.core.Body
 import org.http4k.core.ContentType.Companion.TEXT_HTML
+import org.http4k.core.Method
 import org.http4k.core.Method.GET
+import org.http4k.core.Method.POST
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status.Companion.OK
@@ -33,7 +35,25 @@ class TodoListTest {
         fun`initially returns an empty list of todos`() {
             val response = app(Request(GET, "/todo"))
             val expected: String = "[]"
-            val actual = response.body.stream.reader().readText()
+            val actual: String = response.body.stream.reader().readText()
+            assertEquals(expected, actual)
+        }
+
+        @Test
+        fun `sends a confirmation message when todo item is added`() {
+            val todoData = """
+            {
+                "id": 3,
+                "title": "buy a kitten",
+                "body": "make sure it's friendly",
+                "status": false
+            }
+        """.trimIndent()
+
+            val response  = app(Request(POST, "/todo").body(todoData))
+            val expected: String = "your todo has been added"
+            val actual: String = response.bodyString()
+
             assertEquals(expected, actual)
         }
 
