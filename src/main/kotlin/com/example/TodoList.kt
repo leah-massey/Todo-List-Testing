@@ -14,50 +14,56 @@ import org.http4k.server.asServer
 import java.util.Objects
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.http4k.core.*
 import org.http4k.format.Json
 import org.http4k.format.write
+import java.io.File
 import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
 
 data class TodoItem(
     val id: Int,
-    var title: String,
-    var body: String,
-    var status: Boolean
+    var name: String,
+    var status: String
 )
 
-val mapper = ObjectMapper().registerModule(KotlinModule())
-
-// list starts empty
-val toDoList: MutableList<TodoItem> = mutableListOf()
-//Draft list : TodoItem(1, "clean flat", "notes on how to clean my flat", false), TodoItem(2, "go swimming", "don't forget goggles", status = false)
+val mapper: ObjectMapper = jacksonObjectMapper() // tool to allow us to convert to and from JSON data
 
 val app: HttpHandler = routes(
-    // view task list as a json string
-    "/todo" bind GET to {request: Request ->
-        val toDoListAsJson: String = mapper.writeValueAsString(toDoList) // returns object as string
+    // view todolist as a json string
+    "/todos" bind GET to {request: Request ->
 
-        val taskId: Int? = request.query("id")?.toInt()
+        val todoListFile = File("./src/resources/todo_list.json") // get the todo file
+
+        val todoList: List<TodoItem> = mapper.readValue(todoListFile) // turn to a list of todoItems
+
+        val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
+
+            Response(OK).body(toDoListAsJsonString)
+
+//
+//        val taskId: String = request.query("id")
 
         // if no query parameter, return entire list
-        if (taskId == null) {
-            Response(OK).body(toDoListAsJson)
+//        if (taskId == null) {
+//            Response(OK).body(toDoListAsJsonString)
         // if taskId declared, return task matching the id
-        } else {
-            val singleTask: List<TodoItem> = toDoList.filter {
-                it.id == taskId }
-                    Response(OK).body(mapper.writeValueAsString(singleTask))
-                }
+//        } else {
+//            val singleTask: List<TodoItem> = toDoList.filter {
+//                it.id == taskId }
+//                    Response(OK).body(mapper.writeValueAsString(singleTask))
+//                }
     },
 
     // add an item to task list
-    "/todo" bind POST to {request: Request ->
-        val jsonString = request.bodyString()
-        val newTodo = mapper.readValue(jsonString, TodoItem::class.java) // telling the object mapper to instantiate the ToDoItem class when it parses the jsonString
-        toDoList.add(newTodo)
-        val toDoAsJson = mapper.writeValueAsString(toDoList)
-        Response(OK).body("your todo has been added" )
-    }
+//    "/todo" bind POST to {request: Request ->
+//        val jsonString = request.bodyString()
+//        val newTodo = mapper.readValue(jsonString, TodoItem::class.java) // telling the object mapper to instantiate the ToDoItem class when it parses the jsonString
+//        toDoList.add(newTodo)
+//        val toDoAsJson = mapper.writeValueAsString(toDoList)
+//        Response(OK).body("your todo has been added" )
+//    }
 
 
 
