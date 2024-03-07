@@ -6,9 +6,15 @@ import java.io.File
 
 class Domain(val todoListRepo: TodoListRepoInterface) {
 
-    fun getTodoList(): List<TodoItem>  {
-        val todoList = todoListRepo.getTodos()
-        return todoList
+    fun getTodoList(todoId: String): List<TodoItem>  {
+        val todoList: List<TodoItem> = todoListRepo.getTodos()
+        if (todoId == "") {
+            return todoList
+        } else {
+            return todoList.filter{
+                it.id == todoId
+            }
+        }
     }
 
     // addTodo

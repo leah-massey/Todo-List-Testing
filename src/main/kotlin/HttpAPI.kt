@@ -15,10 +15,13 @@ val mapper: ObjectMapper = jacksonObjectMapper() // tool to allow us to convert 
 
 val app: HttpHandler = routes(
     "/todos" bind GET to {request: Request ->
+        val todoId: String = request.query("todoId")?: "" // handle errors if id is incorrect
 
+        println(todoId)
+        println("hello test")
         val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
         val domain = Domain(todoListRepo)
-        val todoList: List<TodoItem> = domain.getTodoList()
+        val todoList: List<TodoItem> = domain.getTodoList(todoId)
         val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
         Response(OK).body(toDoListAsJsonString)
     },
