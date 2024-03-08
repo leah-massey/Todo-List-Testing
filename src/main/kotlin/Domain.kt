@@ -32,6 +32,21 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
         todoListRepo.updateTodos(todoList)
         return "your item has been added"
     }
+
+    fun updateTodoItemName(todoId: String, updatedName: String): String {
+        val todoList: MutableList<TodoItem> = getTodoList("")
+
+        for (todoItem in todoList) {
+            if (todoItem.id == todoId) {
+                todoItem.name = updatedName
+            }
+        }
+
+        todoListRepo.updateTodos(todoList)
+        return "Your todo has been updated"
+    }
+
+    //update todo status
 }
 
 data class TodoItem(
@@ -45,4 +60,11 @@ data class TodoItem(
 //data class TodoList(
 //    val items: MutableList<TodoItem> = mutableListOf()
 //)
+
+fun main() {
+    val repo = TodoListRepoJSON()
+    val domain = Domain(repo)
+
+    println(domain.updateTodoItemName("7fb54b64-d445-4d3e-ac61-e5f9972f6d13", "plant many trees"))
+}
 
