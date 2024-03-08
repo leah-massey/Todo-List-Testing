@@ -6,10 +6,15 @@ import java.io.File
 
 class TodoListRepoJSON: TodoListRepoInterface {
 
-    override fun getTodos(): List<TodoItem> {
-        val mapper: ObjectMapper = jacksonObjectMapper() // tool that converts to and from JSON data
-        val todoListFile = File("./src/resources/todo_list.json")
-        val todoList: List<TodoItem> = mapper.readValue<List<TodoItem>>(todoListFile) // turn to a list of todoItems
+    val todoListFile = File("./src/resources/todo_list.json")
+    val mapper: ObjectMapper = jacksonObjectMapper()// tool that converts to and from JSON data
+    override fun getTodos(): MutableList<TodoItem> {
+        val todoList: MutableList<TodoItem> = mapper.readValue(todoListFile) // turn to a list of todoItems
         return todoList
+    }
+
+    override fun updateTodos(updatedTodoList:  MutableList<TodoItem>) : String {
+        mapper.writeValue(todoListFile, updatedTodoList)
+        return "todo Added"
     }
 }
