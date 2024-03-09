@@ -20,9 +20,9 @@ class HttpApi(domain: Domain) {
     val mapper: ObjectMapper = jacksonObjectMapper() // tool to allow us to convert to and from JSON data
 
     val app: HttpHandler = routes(
+        // get todos
         "/todos" bind GET to {request: Request ->
-            val todoId: String = request.query("todoId")?: "" // handle errors if id is incorrect
-            val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
+            val todoList: MutableList<TodoItem> = domain.getTodoList()
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
             Response(OK).body(toDoListAsJsonString)
         },
@@ -35,7 +35,8 @@ class HttpApi(domain: Domain) {
             Response(OK).body(confirmationOfTodoAdded)
         },
 
-        "/todos" bind PUT to {request: Request ->
+        // update a todo
+        "/todos/{todoId}" bind PUT to {request: Request ->
             val todoId: String = request.query("todoId")!! // handle errors
             val updatedTodoName: String = request.query("updatedTodoName")!! // handle errors
             val confirmationOfUpdatedTodoName = domain.updateTodoItemName(todoId, updatedTodoName)

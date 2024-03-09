@@ -4,7 +4,7 @@ import java.util.*
 
 class Domain(val todoListRepo: TodoListRepoInterface) {
 
-    fun getTodoList(todoId: String): MutableList<TodoItem>  {
+    fun getTodoList(todoId: String = ""): MutableList<TodoItem>  {
         val todoList: MutableList<TodoItem> = todoListRepo.getTodos() // get todoList
 
         if (todoId == "") {
