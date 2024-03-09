@@ -1,4 +1,5 @@
 import Interfaces.TodoListRepoInterface
+import com.fasterxml.jackson.databind.JsonNode
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PUT
@@ -11,49 +12,57 @@ import org.http4k.server.asServer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.http4k.core.*
+import org.http4k.format.write
 import org.http4k.routing.path
+import org.w3c.dom.Node
 
-val mapper: ObjectMapper = jacksonObjectMapper() // tool to allow us to convert to and from JSON data
+class HttpApi(domain: Domain) {
+    val mapper: ObjectMapper = jacksonObjectMapper() // tool to allow us to convert to and from JSON data
 
-val app: HttpHandler = routes(
-    "/todos" bind GET to {request: Request ->
-        val todoId: String = request.query("todoId")?: "" // handle errors if id is incorrect
+    val app: HttpHandler = routes(
+        "/todos" bind GET to {request: Request ->
+            val todoId: String = request.query("todoId")?: "" // handle errors if id is incorrect
+            val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
+            val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
+            Response(OK).body(toDoListAsJsonString)
+        },
 
-        val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
-        val domain = Domain(todoListRepo)
-        val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
-        val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
-        Response(OK).body(toDoListAsJsonString)
-    },
+        // add a new todo
+        "/todos" bind POST to {request: Request ->
+            val newTodoData: String  = request.bodyString() // returns json tododata in string format //todo handle errors
+            val newTodoName: String = mapper.readTree(newTodoData).get("name").asText() // convert to json string to json node, then to text and extract name
+            val confirmationOfTodoAdded = domain.addTodoItem(newTodoName)
+            Response(OK).body(confirmationOfTodoAdded)
+        },
 
-    "/addTodo/{todoName}" bind POST to {request: Request ->
-        val todoName: String = request.path("todoName")?: "" // handle "" scenario and errors
+        "/todos" bind PUT to {request: Request ->
+            val todoId: String = request.query("todoId")!! // handle errors
+            val updatedTodoName: String = request.query("updatedTodoName")!! // handle errors
+            val confirmationOfUpdatedTodoName = domain.updateTodoItemName(todoId, updatedTodoName)
+            Response(OK).body(confirmationOfUpdatedTodoName)
+        },
 
-        val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
-        val domain = Domain(todoListRepo)
+        "/todos/{todoId}" bind GET to {request: Request ->
+            val todoId: String = request.path("todoId")!! // handle errors if id is incorrect
+            val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
+            val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
+            Response(OK).body(toDoListAsJsonString)
+        },
 
-        val confirmationOfTodoAdded = domain.addTodoItem(todoName)
-        Response(OK).body(confirmationOfTodoAdded)
-    },
-
-    "/updateTodo/{todoId}" bind PUT to {request: Request ->
-        val todoId: String = request.path("todoId")?: "" // handle errors
-        val updatedTodoName: String = request.query("updatedTodoName")?: "" // handle errors
-
-        val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
-        val domain = Domain(todoListRepo)
-
-        val confirmationOfUpdatedTodoName = domain.updateTodoItemName(todoId, updatedTodoName)
-        Response(OK).body(confirmationOfUpdatedTodoName)
-    }
-)
+    )
+}
 
 fun main() {
-    val printingApp: HttpHandler = PrintRequest().then(app)
+    val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
+    val domain = Domain(todoListRepo)
+
+    val printingApp: HttpHandler = PrintRequest().then(HttpApi(domain).app)
 
     val server = printingApp.asServer(SunHttp(9000)).start()
 
     println("Server started on " + server.port())
+
+
 }
 
 
