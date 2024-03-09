@@ -3,6 +3,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PUT
+import org.http4k.core.Method.DELETE
 import org.http4k.core.Status.Companion.OK
 import org.http4k.filter.DebuggingFilters.PrintRequest
 import org.http4k.routing.bind
@@ -51,6 +52,14 @@ class HttpApi(domain: Domain) {
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
             Response(OK).body(toDoListAsJsonString)
         },
+
+        // delete todo by id
+        "/todos/{todoId}" bind DELETE to {request: Request ->
+            val todoId: String = request.path("todoId")!!
+//            val todoList: MutableList<TodoItem> = domain.deleteTodo(todoId)
+            val todoDeletionConfirmation = domain.deleteTodo(todoId)
+            Response(OK).body(todoDeletionConfirmation)
+        }
 
     )
 }
