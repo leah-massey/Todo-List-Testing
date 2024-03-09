@@ -35,14 +35,16 @@ class HttpApi(domain: Domain) {
             Response(OK).body(confirmationOfTodoAdded)
         },
 
-        // update a todo
+        // update a todo (name)
         "/todos/{todoId}" bind PUT to {request: Request ->
-            val todoId: String = request.query("todoId")!! // handle errors
-            val updatedTodoName: String = request.query("updatedTodoName")!! // handle errors
-            val confirmationOfUpdatedTodoName = domain.updateTodoItemName(todoId, updatedTodoName)
-            Response(OK).body(confirmationOfUpdatedTodoName)
+            val todoId: String = request.path("todoId")!! // handle errors
+            val todoDataToUpdate: String = request.bodyString()
+            val updatedTodoName: String = mapper.readTree(todoDataToUpdate).get("name").asText()
+            val confirmationOfTodoNameUpdate = domain.updateTodoItemName(todoId, updatedTodoName)
+            Response(OK).body(confirmationOfTodoNameUpdate)
         },
 
+        // get todo by id
         "/todos/{todoId}" bind GET to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is incorrect
             val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
