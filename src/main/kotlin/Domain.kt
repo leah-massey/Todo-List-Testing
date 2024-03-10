@@ -39,6 +39,7 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedName
+                todoItem.lastModifiedDate = LocalDateTime.now().toString()
             }
         }
 
@@ -67,12 +68,12 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
     fun updateTodoItemStatus(todoId: String, newTodoStatus: String): String {
         val todoList: MutableList<TodoItem> = getTodoList("")
 
-        var updatedTodoStatus: String? = null
         var nameOfUpdatedTodo: String? = null
 
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
-                updatedTodoStatus = newTodoStatus
+                todoItem.status = newTodoStatus
+                todoItem.lastModifiedDate = LocalDateTime.now().toString()
                 nameOfUpdatedTodo = todoItem.name
             }
         }
@@ -84,7 +85,7 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
 data class TodoItem(
     val id: String,
     val createdDate: String,
-    val lastModifiedDate: String,
+    var lastModifiedDate: String,
     var name: String,
     var status: String = "NOT_DONE"
 )
