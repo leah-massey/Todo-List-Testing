@@ -34,24 +34,18 @@ class HttpApi(domain: Domain) {
 
         "/todos/{todoId}" bind PUT to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors
-
             val todoDataToUpdate: String = request.bodyString()
-
             val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
             val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
 
             var updateConfirmation: String = ""
 
             if (todoNameUpdate != null) {
-//                updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
-                updateConfirmation += "name update complete"
-                domain.updateTodoName(todoId, todoNameUpdate)
+                updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
             }
 
             if (todoStatusUpdate != null) {
-//                updateConfirmation += " ${domain.updateTodoStatus(todoId, todoStatusUpdate)}"
-                updateConfirmation += "status update complete"
-                domain.updateTodoStatus(todoId, todoStatusUpdate)
+                updateConfirmation += " ${domain.updateTodoStatus(todoId, todoStatusUpdate)}"
             }
 
             Response(OK).body(updateConfirmation)
