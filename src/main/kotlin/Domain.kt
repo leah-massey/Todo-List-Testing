@@ -3,11 +3,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 class Domain(val todoListRepo: TodoListRepoInterface) {
-
-    // todo add a general todolist variable - as it is called so many times
     fun getTodoList(todoId: String = ""): MutableList<TodoItem>  {
-        val todoList: MutableList<TodoItem> = todoListRepo.getTodos() // get todoList
-
+        val todoList: MutableList<TodoItem> = todoListRepo.getTodos()
         if (todoId == "") {
             return todoList
         } else {
@@ -18,23 +15,23 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
 
     val todoList: MutableList<TodoItem> = getTodoList("")
 
-    fun createNewTodo(todoName: String): TodoItem {
+    private fun createNewTodo(todoName: String): TodoItem {
         val newTodoName: String = todoName
         val newTodoId: String = UUID.randomUUID().toString()
         val createdDate: String = LocalDateTime.now().toString()
-        val newTodoItem: TodoItem = TodoItem(id = newTodoId, createdDate = createdDate, lastModifiedDate = createdDate, name = newTodoName)
+        val newTodoItem = TodoItem(id = newTodoId, createdDate = createdDate, lastModifiedDate = createdDate, name = newTodoName)
 
         return newTodoItem
     }
 
-    fun addTodoItem(todoName: String): String {
+    fun addTodo(todoName: String): String {
         val newTodoItem: TodoItem = createNewTodo(todoName)
         todoList.add(newTodoItem)
         todoListRepo.updateTodos(todoList)
-        return "your item has been added"
+        return "'${todoName}' has been added as a todo."
     }
 
-    fun updateTodoItemName(todoId: String, updatedTodoName: String): String {
+    fun updateTodoName(todoId: String, updatedTodoName: String): String {
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedTodoName
@@ -42,11 +39,10 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
             }
         }
         todoListRepo.updateTodos(todoList)
-        return "Your todo has been updated"
+        return "Your todo has been updated to '${updatedTodoName}'."
     }
 
-
-    fun updateTodoItemStatus(todoId: String, updatedTodoStatus: String): String {
+    fun updateTodoStatus(todoId: String, updatedTodoStatus: String): String {
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -56,7 +52,7 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
             }
         }
         todoListRepo.updateTodos(todoList)
-        return "The status of todo '${nameOfUpdatedTodo}' has been updated to '${updatedTodoStatus}'."
+        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to '${updatedTodoStatus}'."
     }
 
     fun deleteTodo(todoId: String): String {
@@ -71,7 +67,6 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
 
         return "Your todo '${nameOfRemovedTodo}' has been deleted."
     }
-
 
 }
 
@@ -91,6 +86,6 @@ fun main() {
     val repo = TodoListRepoJSON()
     val domain = Domain(repo)
 
-    println(domain.updateTodoItemStatus("8bf2c64b-ddd9-42a9-a604-716ada155fc9", "DONE"))
+    println(domain.updateTodoStatus("8bf2c64b-ddd9-42a9-a604-716ada155fc9", "DONE"))
 }
 
