@@ -50,18 +50,17 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
     fun deleteTodo(todoId: String): String {
         val todoList: MutableList<TodoItem> = getTodoList("")
 
-        var todoItemToRemove: TodoItem? = null
+        var nameOfRemovedTodo: String? = null
 
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
-                todoItemToRemove = todoItem
+                todoList.remove(todoItem)
+                nameOfRemovedTodo = todoItem.name
             }
         }
-
-        todoList.remove(todoItemToRemove)
-
         todoListRepo.updateTodos(todoList) // send updated list back to json file
-        return "Your todo has been deleted"
+
+        return "Your todo '${nameOfRemovedTodo}' has been deleted."
     }
 
     //update todo status
@@ -78,7 +77,7 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
             }
         }
         todoListRepo.updateTodos(todoList)
-        return "The status of todo '${nameOfUpdatedTodo}' has been updated to '${newTodoStatus}'"
+        return "The status of todo '${nameOfUpdatedTodo}' has been updated to '${newTodoStatus}'."
     }
 }
 
