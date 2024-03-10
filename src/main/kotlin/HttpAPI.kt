@@ -36,13 +36,27 @@ class HttpApi(domain: Domain) {
             Response(OK).body(confirmationOfTodoAdded)
         },
 
-        // update a todo (name)
+        // update a todo by name or status
         "/todos/{todoId}" bind PUT to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors
+
             val todoDataToUpdate: String = request.bodyString()
-            val updatedTodoName: String = mapper.readTree(todoDataToUpdate).get("name").asText()
-            val confirmationOfTodoNameUpdate = domain.updateTodoItemName(todoId, updatedTodoName)
-            Response(OK).body(confirmationOfTodoNameUpdate)
+
+            val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
+            val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
+
+            var updateConfirmation: String = ""
+
+            if (todoNameUpdate != null) {
+                updateConfirmation += " ${domain.updateTodoItemName(todoId, todoNameUpdate)}"
+            }
+
+            if (todoStatusUpdate != null) {
+                updateConfirmation += " ${domain.updateTodoItemStatus(todoId, todoStatusUpdate)}"
+            }
+
+//            val confirmationOfTodoNameUpdate = domain.updateTodoItemName(todoId, updatedTodoName)
+            Response(OK).body(updateConfirmation)
         },
 
         // get todo by id
@@ -70,7 +84,7 @@ fun main() {
 
     val printingApp: HttpHandler = PrintRequest().then(HttpApi(domain).app)
 
-    val server = printingApp.asServer(SunHttp(9000)).start()
+    val server = printingApp.asServer(SunHttp(3000)).start()
 
     println("Server started on " + server.port())
 
