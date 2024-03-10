@@ -1,4 +1,3 @@
-import Interfaces.TodoListRepoInterface
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PUT
@@ -11,11 +10,13 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import Interfaces.TodoListRepo
 import org.http4k.core.*
 import org.http4k.routing.path
 
 class HttpApi(domain: Domain) {
     val mapper: ObjectMapper = jacksonObjectMapper()
+
 
     val app: HttpHandler = routes(
         "/todos" bind GET to {request: Request ->
@@ -42,11 +43,15 @@ class HttpApi(domain: Domain) {
             var updateConfirmation: String = ""
 
             if (todoNameUpdate != null) {
-                updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
+//                updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
+                updateConfirmation += "name update complete"
+                domain.updateTodoName(todoId, todoNameUpdate)
             }
 
             if (todoStatusUpdate != null) {
-                updateConfirmation += " ${domain.updateTodoStatus(todoId, todoStatusUpdate)}"
+//                updateConfirmation += " ${domain.updateTodoStatus(todoId, todoStatusUpdate)}"
+                updateConfirmation += "status update complete"
+                domain.updateTodoStatus(todoId, todoStatusUpdate)
             }
 
             Response(OK).body(updateConfirmation)
@@ -61,7 +66,6 @@ class HttpApi(domain: Domain) {
 
         "/todos/{todoId}" bind DELETE to {request: Request ->
             val todoId: String = request.path("todoId")!!
-//            val todoList: MutableList<TodoItem> = domain.deleteTodo(todoId)
             val todoDeletionConfirmation = domain.deleteTodo(todoId)
             Response(OK).body(todoDeletionConfirmation)
         }
@@ -70,7 +74,7 @@ class HttpApi(domain: Domain) {
 }
 
 fun main() {
-    val todoListRepo: TodoListRepoInterface = TodoListRepoJSON()
+    val todoListRepo: TodoListRepo = TodoListRepoJSON()
     val domain = Domain(todoListRepo)
 
     val printingApp: HttpHandler = PrintRequest().then(HttpApi(domain).app)

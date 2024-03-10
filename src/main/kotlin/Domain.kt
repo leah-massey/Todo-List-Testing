@@ -1,8 +1,10 @@
-import Interfaces.TodoListRepoInterface
+
+
 import java.time.LocalDateTime
 import java.util.*
+import Interfaces.TodoListRepo
 
-class Domain(val todoListRepo: TodoListRepoInterface) {
+class Domain(val todoListRepo: TodoListRepo) {
     fun getTodoList(todoId: String = ""): MutableList<TodoItem>  {
         val todoList: MutableList<TodoItem> = todoListRepo.getTodos()
         if (todoId == "") {
@@ -32,6 +34,7 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): String {
+
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedTodoName
@@ -57,12 +60,15 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
 
     fun deleteTodo(todoId: String): String {
         var nameOfRemovedTodo: String? = null
+        var todoToRemove: TodoItem? = null
+
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
-                todoList.remove(todoItem)
                 nameOfRemovedTodo = todoItem.name
+                todoToRemove = todoItem
             }
         }
+        todoList.remove(todoToRemove)
         todoListRepo.updateTodos(todoList) // send updated list back to json file
 
         return "Your todo '${nameOfRemovedTodo}' has been deleted."
@@ -78,6 +84,7 @@ data class TodoItem(
     var status: String = "NOT_DONE"
 )
 
+// cannot make this work!!
 //data class TodoList(
 //    val items: MutableList<TodoItem> = mutableListOf()
 //)
@@ -86,6 +93,6 @@ fun main() {
     val repo = TodoListRepoJSON()
     val domain = Domain(repo)
 
-    println(domain.updateTodoStatus("8bf2c64b-ddd9-42a9-a604-716ada155fc9", "DONE"))
+    println(domain.deleteTodo("2dc54325-5652-48e9-b322-04e19a393ebf"))
 }
 
