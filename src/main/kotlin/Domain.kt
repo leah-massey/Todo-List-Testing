@@ -64,6 +64,21 @@ class Domain(val todoListRepo: TodoListRepoInterface) {
     }
 
     //update todo status
+    fun updateTodoItemStatus(todoId: String, newTodoStatus: String): String {
+        val todoList: MutableList<TodoItem> = getTodoList("")
+
+        var updatedTodoStatus: String? = null
+        var nameOfUpdatedTodo: String? = null
+
+        for (todoItem in todoList) {
+            if (todoItem.id == todoId) {
+                updatedTodoStatus = newTodoStatus
+                nameOfUpdatedTodo = todoItem.name
+            }
+        }
+        todoListRepo.updateTodos(todoList)
+        return "The status of todo '${nameOfUpdatedTodo}' has been updated to '${newTodoStatus}'"
+    }
 }
 
 data class TodoItem(
@@ -82,6 +97,6 @@ fun main() {
     val repo = TodoListRepoJSON()
     val domain = Domain(repo)
 
-    println(domain.deleteTodo("ea3cff7c-6f57-4304-b403-3af4e637f4ca"))
+    println(domain.updateTodoItemStatus("8bf2c64b-ddd9-42a9-a604-716ada155fc9", "DONE"))
 }
 
