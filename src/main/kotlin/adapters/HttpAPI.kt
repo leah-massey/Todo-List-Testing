@@ -17,17 +17,27 @@ import org.http4k.routing.path
 class HttpApi(domain: Domain) {
 
     val app: HttpHandler = routes(
-        "/todos" bind GET to {request: Request ->
-            val todoList: List<TodoItem> = domain.getTodoList()
-            val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
-            Response(OK)
-                .body(toDoListAsJsonString)
-                .headers(listOf("content-type" to "application/json"))
+        "/todos" bind GET to { request: Request ->
+            val todoStatus: String = request.query("status") ?: ""
+
+            if (todoStatus == "") {
+                val todoList: List<TodoItem> = domain.getTodoList()
+                val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
+                Response(OK)
+                    .body(toDoListAsJsonString)
+                    .headers(listOf("content-type" to "application/json"))
+            } else {
+                val todoListFilteredByStatus: List<TodoItem> = domain.getItemsByStatus(todoStatus)
+                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
+                Response(OK)
+                    .body(todoListFilteredByStatusAsJSONString)
+                    .headers(listOf("content-type" to "application/json"))
+            }
         },
 
         "/todos" bind POST to {request: Request ->
-            val newTodoData: String  = request.bodyString() // returns json todo data in string format //todo handle errors
-            val newTodoName: String = mapper.readTree(newTodoData).get("name").asText() // convert to json string to json node, then to text and extract name
+            val newTodoData: String  = request.bodyString()  //todo handle errors
+            val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
             val confirmationOfTodoAdded = domain.addTodo(newTodoName)
             Response(OK).body(confirmationOfTodoAdded)
         },
@@ -56,9 +66,9 @@ class HttpApi(domain: Domain) {
         },
 
         "/todos/{todoId}" bind GET to {request: Request ->
-            val todoId: String = request.path("todoId")!! // handle errors if id is incorrect
-            val todoList: List<TodoItem> = domain.getTodoList(todoId)
-            val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
+            val todoId: String = request.path("todoId")!! // handle errors if id is not valid
+            val todoItem: List<TodoItem> = domain.getTodoList(todoId)
+            val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)
                 .headers(listOf("content-type" to "application/json"))
@@ -69,6 +79,7 @@ class HttpApi(domain: Domain) {
             val todoDeletionConfirmation = domain.deleteTodo(todoId)
             Response(OK).body(todoDeletionConfirmation)
         }
+
     )
 
     private val mapper: ObjectMapper = jacksonObjectMapper()

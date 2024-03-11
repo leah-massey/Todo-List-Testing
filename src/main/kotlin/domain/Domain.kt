@@ -1,5 +1,6 @@
 package domain
 
+import adapters.TodoListFileRepo
 import domain.models.TodoItem
 import java.time.LocalDateTime
 import java.util.*
@@ -64,6 +65,13 @@ class Domain(val todoListRepo: TodoListRepo) {
         return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'NOT_DONE'."
     }
 
+    fun getItemsByStatus(status: String): List<TodoItem> {
+        val todoList: List<TodoItem> = getTodoList("")
+        return todoList.filter { todo ->
+            todo.status == status
+        }
+    }
+
     fun deleteTodo(todoId: String): String {
         val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
         var nameOfRemovedTodo: String? = null
@@ -76,7 +84,7 @@ class Domain(val todoListRepo: TodoListRepo) {
             }
         }
         todoList.remove(todoToRemove)
-        todoListRepo.updateTodoList(todoList) // send updated list back to json file
+        todoListRepo.updateTodoList(todoList)
 
         return "Your todo '${nameOfRemovedTodo}' has been deleted."
     }
@@ -90,12 +98,6 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 }
 
-
-
-// cannot make this work!!
-//data class TodoList(
-//    val items: MutableList<TodoItem> = mutableListOf()
-//)
 
 
 
