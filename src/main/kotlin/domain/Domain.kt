@@ -1,5 +1,6 @@
 package domain
 
+import domain.models.TodoItem
 import java.time.LocalDateTime
 import java.util.*
 import ports.TodoListRepo
@@ -15,26 +16,16 @@ class Domain(val todoListRepo: TodoListRepo) {
         }
     }
 
-    val todoList: MutableList<TodoItem> = getTodoList("")
-
-    private fun createNewTodo(todoName: String): TodoItem {
-        val newTodoName: String = todoName
-        val newTodoId: String = UUID.randomUUID().toString()
-        val createdDate: String = LocalDateTime.now().toString()
-        val newTodoItem = TodoItem(id = newTodoId, createdDate = createdDate, lastModifiedDate = createdDate, name = newTodoName)
-
-        return newTodoItem
-    }
-
     fun addTodo(todoName: String): String {
-        val newTodoItem: TodoItem = createNewTodo(todoName)
+        val todoList: MutableList<TodoItem> = getTodoList("")
+        val newTodoItem = TodoItem(createID(), timeStamp(), timeStamp(), todoName)
         todoList.add(newTodoItem)
         todoListRepo.updateTodos(todoList)
         return "'${todoName}' has been added as a todo."
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): String {
-
+        val todoList: MutableList<TodoItem> = getTodoList("")
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedTodoName
@@ -46,6 +37,7 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 
     fun updateTodoStatus(todoId: String, updatedTodoStatus: String): String {
+        val todoList: MutableList<TodoItem> = getTodoList("")
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -59,6 +51,7 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 
     fun deleteTodo(todoId: String): String {
+        val todoList: MutableList<TodoItem> = getTodoList("")
         var nameOfRemovedTodo: String? = null
         var todoToRemove: TodoItem? = null
 
@@ -74,15 +67,18 @@ class Domain(val todoListRepo: TodoListRepo) {
         return "Your todo '${nameOfRemovedTodo}' has been deleted."
     }
 
+    private fun createID(): String {
+        return UUID.randomUUID().toString()
+    }
+
+    private fun timeStamp(): String {
+        return LocalDateTime.now().toString()
+    }
+
+
 }
 
-data class TodoItem(
-    val id: String,
-    val createdDate: String,
-    var lastModifiedDate: String,
-    var name: String,
-    var status: String = "NOT_DONE"
-)
+
 
 // cannot make this work!!
 //data class TodoList(

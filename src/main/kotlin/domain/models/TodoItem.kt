@@ -1,4 +1,4 @@
-package models
+package domain.models
 
 data class TodoItem(
     val id: String,

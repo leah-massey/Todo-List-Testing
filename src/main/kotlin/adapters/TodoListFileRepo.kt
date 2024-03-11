@@ -1,5 +1,5 @@
-package domain.adapters
-import domain.TodoItem
+package adapters
+import domain.models.TodoItem
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue

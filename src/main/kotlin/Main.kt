@@ -1,6 +1,6 @@
 import domain.Domain
-import domain.adapters.HttpApi
-import domain.adapters.TodoListFileRepo
+import adapters.HttpApi
+import adapters.TodoListFileRepo
 import ports.TodoListRepo
 import org.http4k.core.HttpHandler
 import org.http4k.core.then

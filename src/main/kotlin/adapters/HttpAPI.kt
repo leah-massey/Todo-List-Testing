@@ -1,7 +1,7 @@
-package domain.adapters
+package adapters
 
 import domain.Domain
-import domain.TodoItem
+import domain.models.TodoItem
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PUT
