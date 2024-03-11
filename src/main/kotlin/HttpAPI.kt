@@ -67,17 +67,6 @@ class HttpApi(domain: Domain) {
     )
 }
 
-fun main() {
-    val todoListRepo: TodoListRepo = TodoListRepoJSON()
-    val domain = Domain(todoListRepo)
 
-    val printingApp: HttpHandler = PrintRequest().then(HttpApi(domain).app)
-
-    val server = printingApp.asServer(SunHttp(3000)).start()
-
-    println("Server started on " + server.port())
-
-
-}
 
 
