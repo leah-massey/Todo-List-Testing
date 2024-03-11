@@ -1,6 +1,6 @@
 package ports
 
-import TodoItem
+import domain.TodoItem
 
 interface TodoListRepo {
     fun getTodos(): MutableList<TodoItem>
