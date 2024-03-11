@@ -1,0 +1,15 @@
+### User Stories
+
+As a user, I want to view my list of todos.
+
+As a user, I want to view a list of my todos by status.
+
+As a user, I want to add an item to my todo list.
+
+As a user, I want to view a specific todo with given ID.
+
+As a user, I want to update a todo name in my todo list.
+
+As a user, I want to update the status of a todo.
+
+As a user, I want to be able to delete a todo by ID.
