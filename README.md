@@ -1,6 +1,6 @@
 # TodoList
 
-This todo list is an application where a user can view, add, update and delete their todos. It is the starting point for and exploration of Event Sourcing.
+In this application a user can view, add, update and delete their todos. It is the starting point for and exploration of Event Sourcing.
 
 ### To note: 
 This is a learning project, with some comments left in for personal reference. 
