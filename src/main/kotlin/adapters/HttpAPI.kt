@@ -15,8 +15,6 @@ import org.http4k.core.*
 import org.http4k.routing.path
 
 class HttpApi(domain: Domain) {
-    val mapper: ObjectMapper = jacksonObjectMapper()
-
 
     val app: HttpHandler = routes(
         "/todos" bind GET to {request: Request ->
@@ -71,8 +69,9 @@ class HttpApi(domain: Domain) {
             val todoDeletionConfirmation = domain.deleteTodo(todoId)
             Response(OK).body(todoDeletionConfirmation)
         }
-
     )
+
+    private val mapper: ObjectMapper = jacksonObjectMapper()
 }
 
 
