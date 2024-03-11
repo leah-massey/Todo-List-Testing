@@ -1,4 +1,4 @@
-
+package domain.adapters
 import domain.TodoItem
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import ports.TodoListRepo
 import java.io.File
 
-class TodoListRepoJSON: TodoListRepo {
+class TodoListFileRepo: TodoListRepo {
 
     val todoListFile = File("./src/resources/todo_list.json")
     val mapper: ObjectMapper = jacksonObjectMapper()// tool that converts to and from JSON data

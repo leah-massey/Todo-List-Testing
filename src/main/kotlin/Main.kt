@@ -1,4 +1,6 @@
 import domain.Domain
+import domain.adapters.HttpApi
+import domain.adapters.TodoListFileRepo
 import ports.TodoListRepo
 import org.http4k.core.HttpHandler
 import org.http4k.core.then
@@ -7,7 +9,7 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 
 fun main() {
-    val todoListRepo: TodoListRepo = TodoListRepoJSON()
+    val todoListRepo: TodoListRepo = TodoListFileRepo()
     val domain = Domain(todoListRepo)
 
     val printingApp: HttpHandler = DebuggingFilters.PrintRequest().then(HttpApi(domain).app)
