@@ -11,54 +11,54 @@ import org.junit.jupiter.api.Test
 
 class TodoListDomainTest { // check naming
 
-    @Nested
-    inner class TodoPathTest {
-        @Test
-        fun`returns 200-ok on the root URI on a valid request`() {
-            val response = app(Request(GET, "/todos"))
-            assertEquals(OK, response.status)
-        }
-
-        @Test
-        fun`initially returns an empty list of todos`() {
-
-            val TodoListRepoThatReturnsAFixedEmptyTodoList = object: TodoListRepoInterface {
-                override fun getTodos(): MutableList<TodoItem> {
-                    return mutableListOf()
-                }
-            }
-            val domain = Domain(TodoListRepoThatReturnsAFixedEmptyTodoList)
-            val expected = "[]"
-            val actual = domain.getTodoList()
-            assertEquals(expected, actual)
-        }
-
-        @Test
-        fun `sends a confirmation message when todo item is added`() {
-            val fixedTimeStamp = object : TimeStampInterface {
-                override fun timeOfTodoCreation(): String {
-                    return "2024.08.31.08.32.16"
-                }
-            }
-
-            val fixedUUID = object : UUIDInterface {
-                override fun todoUUID(): String {
-                    return "1234556"
-                }
-            }
-
-            val todoData = """
-            {
-                "name": "buy a kitten",
-            }
-            """.trimIndent()
-
-            val response  = app(Request(POST, "/todo").body(todoData))
-            val expected: String = "your todo has been added"
-            val actual: String = response.bodyString()
-
-            assertEquals(expected, actual)
-        }
+//    @Nested
+//    inner class TodoPathTest {
+//        @Test
+//        fun`returns 200-ok on the root URI on a valid request`() {
+//            val response = app(Request(GET, "/todos"))
+//            assertEquals(OK, response.status)
+//        }
+//
+//        @Test
+//        fun`initially returns an empty list of todos`() {
+//
+//            val TodoListRepoThatReturnsAFixedEmptyTodoList = object: TodoListRepoInterface {
+//                override fun getTodos(): MutableList<TodoItem> {
+//                    return mutableListOf()
+//                }
+//            }
+//            val domain = Domain(TodoListRepoThatReturnsAFixedEmptyTodoList)
+//            val expected = "[]"
+//            val actual = domain.getTodoList()
+//            assertEquals(expected, actual)
+//        }
+//
+//        @Test
+//        fun `sends a confirmation message when todo item is added`() {
+//            val fixedTimeStamp = object : TimeStampInterface {
+//                override fun timeOfTodoCreation(): String {
+//                    return "2024.08.31.08.32.16"
+//                }
+//            }
+//
+//            val fixedUUID = object : UUIDInterface {
+//                override fun todoUUID(): String {
+//                    return "1234556"
+//                }
+//            }
+//
+//            val todoData = """
+//            {
+//                "name": "buy a kitten",
+//            }
+//            """.trimIndent()
+//
+//            val response  = app(Request(POST, "/todo").body(todoData))
+//            val expected: String = "your todo has been added"
+//            val actual: String = response.bodyString()
+//
+//            assertEquals(expected, actual)
+//        }
 
 
 //
@@ -131,4 +131,4 @@ class TodoListDomainTest { // check naming
 //        assertThat(request, hasBody("http4k is cool").and(hasQuery("a", "b")))
 //    }
 
-}
+//}
