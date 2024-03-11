@@ -22,7 +22,9 @@ class HttpApi(domain: Domain) {
         "/todos" bind GET to {request: Request ->
             val todoList: List<TodoItem> = domain.getTodoList()
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
-            Response(OK).body(toDoListAsJsonString)
+            Response(OK)
+                .body(toDoListAsJsonString)
+                .headers(listOf("content-type" to "application/json"))
         },
 
         "/todos" bind POST to {request: Request ->
@@ -59,7 +61,9 @@ class HttpApi(domain: Domain) {
             val todoId: String = request.path("todoId")!! // handle errors if id is incorrect
             val todoList: List<TodoItem> = domain.getTodoList(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
-            Response(OK).body(toDoListAsJsonString)
+            Response(OK)
+                .body(toDoListAsJsonString)
+                .headers(listOf("content-type" to "application/json"))
         },
 
         "/todos/{todoId}" bind DELETE to {request: Request ->
