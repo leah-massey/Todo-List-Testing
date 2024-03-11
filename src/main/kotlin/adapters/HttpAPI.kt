@@ -20,7 +20,7 @@ class HttpApi(domain: Domain) {
 
     val app: HttpHandler = routes(
         "/todos" bind GET to {request: Request ->
-            val todoList: MutableList<TodoItem> = domain.getTodoList()
+            val todoList: List<TodoItem> = domain.getTodoList()
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
             Response(OK).body(toDoListAsJsonString)
         },
@@ -53,7 +53,7 @@ class HttpApi(domain: Domain) {
 
         "/todos/{todoId}" bind GET to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is incorrect
-            val todoList: MutableList<TodoItem> = domain.getTodoList(todoId)
+            val todoList: List<TodoItem> = domain.getTodoList(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoList) // turn back to a json string
             Response(OK).body(toDoListAsJsonString)
         },

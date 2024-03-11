@@ -9,10 +9,10 @@ import java.io.File
 class TodoListFileRepo(filePath: String): TodoListRepo {
     val todoListFile = File(filePath)
     val mapper: ObjectMapper = jacksonObjectMapper()// tool that converts to and from JSON data
-    override fun getTodos(): MutableList<TodoItem> {
-        val todoList: MutableList<TodoItem> = mapper.readValue(todoListFile) // turn to a list of todoItems
+    override fun getTodos(): List<TodoItem> {
+        val todoList: List<TodoItem> = mapper.readValue(todoListFile) // turn to a list of todoItems
         return todoList
     }
-    override fun updateTodos(updatedTodoList:  MutableList<TodoItem>) = mapper.writeValue(todoListFile, updatedTodoList)
+    override fun updateTodoList(updatedTodoList:  List<TodoItem>) = mapper.writeValue(todoListFile, updatedTodoList)
 
 }
