@@ -44,8 +44,12 @@ class HttpApi(domain: Domain) {
                 updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
             }
 
-            if (todoStatusUpdate != null) {
-                updateConfirmation += " ${domain.updateTodoStatus(todoId, todoStatusUpdate)}"
+            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
+                updateConfirmation += " ${domain.markTodoAsDone(todoId)}"
+            }
+
+            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
+                updateConfirmation += " ${domain.markTodoAsNotDone(todoId)}"
             }
 
             Response(OK).body(updateConfirmation)

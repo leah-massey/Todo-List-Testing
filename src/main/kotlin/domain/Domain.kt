@@ -36,18 +36,32 @@ class Domain(val todoListRepo: TodoListRepo) {
         return "Your todo has been updated to '${updatedTodoName}'."
     }
 
-    fun updateTodoStatus(todoId: String, updatedTodoStatus: String): String {
+    fun markTodoAsDone(todoId: String): String {
         val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
-                todoItem.status = updatedTodoStatus
+                todoItem.status = "DONE"
                 todoItem.lastModifiedDate = LocalDateTime.now().toString()
                 nameOfUpdatedTodo = todoItem.name
             }
         }
         todoListRepo.updateTodoList(todoList)
-        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to '${updatedTodoStatus}'."
+        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'DONE'."
+    }
+
+    fun markTodoAsNotDone(todoId: String): String {
+        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        var nameOfUpdatedTodo: String? = null
+        for (todoItem in todoList) {
+            if (todoItem.id == todoId) {
+                todoItem.status = "NOT_DONE"
+                todoItem.lastModifiedDate = LocalDateTime.now().toString()
+                nameOfUpdatedTodo = todoItem.name
+            }
+        }
+        todoListRepo.updateTodoList(todoList)
+        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'NOT_DONE'."
     }
 
     fun deleteTodo(todoId: String): String {
