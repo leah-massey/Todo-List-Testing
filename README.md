@@ -16,7 +16,13 @@ I will be using this project as the base for exploring Event Sourcing
 
 ```git clone https://github.com/leah-massey/Kotlin-Todo-List.git```
 
-When the server is running, the endpoints can be called from Postman
+
+To start the server, run the main function located here: 
+```src/main/kotlin/Main.kt```
+
+When the server is running, the endpoints can be called from Postman. 
+For example, to get all todos, run a GET request of the following:
+```http://localhost:3000/todos```
 
 ## Package
 ```
