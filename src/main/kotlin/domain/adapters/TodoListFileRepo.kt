@@ -6,9 +6,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import ports.TodoListRepo
 import java.io.File
 
-class TodoListFileRepo: TodoListRepo {
-
-    val todoListFile = File("./src/resources/todo_list.json")
+class TodoListFileRepo(filePath: String): TodoListRepo {
+    val todoListFile = File(filePath)
     val mapper: ObjectMapper = jacksonObjectMapper()// tool that converts to and from JSON data
     override fun getTodos(): MutableList<TodoItem> {
         val todoList: MutableList<TodoItem> = mapper.readValue(todoListFile) // turn to a list of todoItems

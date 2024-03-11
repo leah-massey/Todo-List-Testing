@@ -9,7 +9,7 @@ import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 
 fun main() {
-    val todoListRepo: TodoListRepo = TodoListFileRepo()
+    val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
     val domain = Domain(todoListRepo)
 
     val printingApp: HttpHandler = DebuggingFilters.PrintRequest().then(HttpApi(domain).app)
