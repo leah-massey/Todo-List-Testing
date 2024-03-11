@@ -2,7 +2,7 @@
 
 import java.time.LocalDateTime
 import java.util.*
-import Interfaces.TodoListRepo
+import ports.TodoListRepo
 
 class Domain(val todoListRepo: TodoListRepo) {
     fun getTodoList(todoId: String = ""): MutableList<TodoItem>  {
@@ -89,10 +89,5 @@ data class TodoItem(
 //    val items: MutableList<TodoItem> = mutableListOf()
 //)
 
-fun main() {
-    val repo = TodoListRepoJSON()
-    val domain = Domain(repo)
 
-    println(domain.deleteTodo("2dc54325-5652-48e9-b322-04e19a393ebf"))
-}
 
