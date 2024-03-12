@@ -12,6 +12,7 @@ import org.http4k.routing.routes
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.http4k.core.*
+import org.http4k.core.Status.Companion.CREATED
 import org.http4k.routing.path
 
 class HttpApi(domain: Domain) {
@@ -40,7 +41,7 @@ class HttpApi(domain: Domain) {
             val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
             val newTodo = domain.addTodo(newTodoName)
             val newTodoAsJsonString = mapper.writeValueAsString(newTodo)
-            Response(OK)
+            Response(CREATED)
                 .body(newTodoAsJsonString)
                 .headers(listOf("content-type" to "application/json"))
         },
