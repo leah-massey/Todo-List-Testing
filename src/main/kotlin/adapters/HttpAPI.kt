@@ -38,8 +38,11 @@ class HttpApi(domain: Domain) {
         "/todos" bind POST to {request: Request ->
             val newTodoData: String  = request.bodyString()  //todo handle errors
             val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
-            val confirmationOfTodoAdded = domain.addTodo(newTodoName)
-            Response(OK).body(confirmationOfTodoAdded)
+            val newTodo = domain.addTodo(newTodoName)
+            val newTodoAsJsonString = mapper.writeValueAsString(newTodo)
+            Response(OK)
+                .body(newTodoAsJsonString)
+                .headers(listOf("content-type" to "application/json"))
         },
 
         "/todos/{todoId}" bind PUT to {request: Request ->

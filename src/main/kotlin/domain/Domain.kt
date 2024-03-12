@@ -17,12 +17,12 @@ class Domain(val todoListRepo: TodoListRepo) {
         }
     }
 
-    fun addTodo(todoName: String): String {
+    fun addTodo(todoName: String): TodoItem {
         val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
         val newTodoItem = TodoItem(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
         todoList.add(newTodoItem)
         todoListRepo.updateTodoList(todoList)
-        return "'${todoName}' has been added as a todo."
+        return newTodoItem
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): String {
