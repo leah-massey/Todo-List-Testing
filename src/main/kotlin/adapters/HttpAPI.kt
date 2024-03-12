@@ -4,7 +4,7 @@ import domain.Domain
 import domain.models.TodoItem
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
-import org.http4k.core.Method.PUT
+import org.http4k.core.Method.PATCH
 import org.http4k.core.Method.DELETE
 import org.http4k.core.Status.Companion.OK
 import org.http4k.routing.bind
@@ -46,27 +46,30 @@ class HttpApi(domain: Domain) {
                 .headers(listOf("content-type" to "application/json"))
         },
 
-        "/todos/{todoId}" bind PUT to {request: Request ->
+        "/todos/{todoId}" bind PATCH to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors
             val todoDataToUpdate: String = request.bodyString()
             val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
             val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
 
-            var updateConfirmation: String = ""
-
             if (todoNameUpdate != null) {
-                updateConfirmation += " ${domain.updateTodoName(todoId, todoNameUpdate)}"
+                domain.updateTodoName(todoId, todoNameUpdate)
             }
 
             if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
-                updateConfirmation += " ${domain.markTodoAsDone(todoId)}"
+                domain.markTodoAsDone(todoId)
             }
 
             if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
-                updateConfirmation += " ${domain.markTodoAsNotDone(todoId)}"
+                domain.markTodoAsNotDone(todoId)
             }
 
-            Response(OK).body(updateConfirmation)
+            val updatedTodo: List<TodoItem> = domain.getTodoList(todoId)
+            val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
+
+                Response(OK)
+                    .body(updatedTodoAsJson)
+                    .headers(listOf("content-type" to "application/json"))
         },
 
         "/todos/{todoId}" bind GET to {request: Request ->

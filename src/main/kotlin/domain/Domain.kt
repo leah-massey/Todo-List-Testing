@@ -25,16 +25,18 @@ class Domain(val todoListRepo: TodoListRepo) {
         return newTodoItem
     }
 
-    fun updateTodoName(todoId: String, updatedTodoName: String): String {
+    fun updateTodoName(todoId: String, updatedTodoName: String): TodoItem? {
         val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        var updatedTodo: TodoItem? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedTodoName
                 todoItem.lastModifiedDate = LocalDateTime.now().toString()
+                updatedTodo = todoItem
             }
         }
         todoListRepo.updateTodoList(todoList)
-        return "Your todo has been updated to '${updatedTodoName}'."
+        return updatedTodo
     }
 
     fun markTodoAsDone(todoId: String): String {
