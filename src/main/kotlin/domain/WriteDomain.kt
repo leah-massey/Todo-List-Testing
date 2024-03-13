@@ -1,23 +1,23 @@
 package domain
 
-import domain.models.TodoItem
+import domain.models.Todo
 import ports.TodoListRepo
 import java.time.LocalDateTime
 import java.util.*
 
 class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
 
-    fun addTodo(todoName: String): TodoItem {
-        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
-        val newTodoItem = TodoItem(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
+    fun addTodo(todoName: String): Todo {
+        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
+        val newTodoItem = Todo(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
         todoList.add(newTodoItem)
         todoListRepo.updateTodoList(todoList)
         return newTodoItem
     }
 
-    fun updateTodoName(todoId: String, updatedTodoName: String): TodoItem? {
-        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
-        var updatedTodo: TodoItem? = null
+    fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {
+        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
+        var updatedTodo: Todo? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
                 todoItem.name = updatedTodoName
@@ -30,7 +30,7 @@ class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
     }
 
     fun markTodoAsDone(todoId: String): String {
-        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
+        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -44,7 +44,7 @@ class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
     }
 
     fun markTodoAsNotDone(todoId: String): String {
-        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
+        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {

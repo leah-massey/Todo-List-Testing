@@ -1,9 +1,9 @@
 package ports
 
-import domain.models.TodoItem
+import domain.models.Todo
 
 interface TodoListRepo {
-    fun getTodos(): List<TodoItem>
-    fun updateTodoList(updatedTodoList: List<TodoItem>)
+    fun getTodos(): List<Todo>
+    fun updateTodoList(updatedTodoList: List<Todo>)
 
 }

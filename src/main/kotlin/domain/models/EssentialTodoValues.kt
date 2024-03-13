@@ -1,6 +1,6 @@
 package domain.models
 
-data class EssentialTodoItemValues(
+data class EssentialTodoValues(
     val id: String,
     val name: String,
     val status: String

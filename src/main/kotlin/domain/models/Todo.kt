@@ -1,6 +1,6 @@
 package domain.models
 
-data class TodoItem(
+data class Todo(
     val id: String,
     val createdDate: String,
     var lastModifiedDate: String,
