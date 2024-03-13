@@ -1,24 +1,14 @@
 package domain
 
-import adapters.TodoListFileRepo
 import domain.models.TodoItem
+import ports.TodoListRepo
 import java.time.LocalDateTime
 import java.util.*
-import ports.TodoListRepo
 
-class Domain(val todoListRepo: TodoListRepo) {
-    fun getTodoList(todoId: String = ""): List<TodoItem>  {
-        val todoList: List<TodoItem> = todoListRepo.getTodos()
-        if (todoId == "") {
-            return todoList
-        } else {
-            return todoList.filter {
-            it.id == todoId }
-        }
-    }
+class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
 
     fun addTodo(todoName: String): TodoItem {
-        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
         val newTodoItem = TodoItem(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
         todoList.add(newTodoItem)
         todoListRepo.updateTodoList(todoList)
@@ -26,7 +16,7 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): TodoItem? {
-        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
         var updatedTodo: TodoItem? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -40,7 +30,7 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 
     fun markTodoAsDone(todoId: String): String {
-        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -54,7 +44,7 @@ class Domain(val todoListRepo: TodoListRepo) {
     }
 
     fun markTodoAsNotDone(todoId: String): String {
-        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
+        val todoList: MutableList<TodoItem> = readDomain.getTodoList("").toMutableList()
         var nameOfUpdatedTodo: String? = null
         for (todoItem in todoList) {
             if (todoItem.id == todoId) {
@@ -67,30 +57,6 @@ class Domain(val todoListRepo: TodoListRepo) {
         return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'NOT_DONE'."
     }
 
-    fun getItemsByStatus(status: String): List<TodoItem> {
-        val todoList: List<TodoItem> = getTodoList("")
-        return todoList.filter { todo ->
-            todo.status == status
-        }
-    }
-
-    fun deleteTodo(todoId: String): String {
-        val todoList: MutableList<TodoItem> = getTodoList("").toMutableList()
-        var nameOfRemovedTodo: String? = null
-        var todoToRemove: TodoItem? = null
-
-        for (todoItem in todoList) {
-            if (todoItem.id == todoId) {
-                nameOfRemovedTodo = todoItem.name
-                todoToRemove = todoItem
-            }
-        }
-        todoList.remove(todoToRemove)
-        todoListRepo.updateTodoList(todoList)
-
-        return "Your todo '${nameOfRemovedTodo}' has been deleted."
-    }
-
     private fun createID(): String {
         return UUID.randomUUID().toString()
     }
@@ -98,8 +64,5 @@ class Domain(val todoListRepo: TodoListRepo) {
     private fun timeStamp(): String {
         return LocalDateTime.now().toString()
     }
+
 }
-
-
-
-
