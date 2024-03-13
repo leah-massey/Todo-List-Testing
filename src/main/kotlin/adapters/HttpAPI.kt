@@ -7,13 +7,11 @@ import org.http4k.core.Method.POST
 import org.http4k.core.Method.PATCH
 import org.http4k.core.Method.DELETE
 import org.http4k.core.Status.Companion.OK
-import org.http4k.routing.bind
-import org.http4k.routing.routes
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.CREATED
-import org.http4k.routing.path
+import org.http4k.routing.*
 
 class HttpApi(domain: Domain) {
 
@@ -26,13 +24,13 @@ class HttpApi(domain: Domain) {
                 val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
                 Response(OK)
                     .body(toDoListAsJsonString)
-                    .headers(listOf("content-type" to "application/json"))
+                    .header("content-type","application/json")
             } else {
                 val todoListFilteredByStatus: List<TodoItem> = domain.getItemsByStatus(todoStatus)
                 val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
                 Response(OK)
                     .body(todoListFilteredByStatusAsJSONString)
-                    .headers(listOf("content-type" to "application/json"))
+                    .header("content-type", "application/json")
             }
         },
 
@@ -40,10 +38,14 @@ class HttpApi(domain: Domain) {
             val newTodoData: String  = request.bodyString()  //todo handle errors
             val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
             val newTodo = domain.addTodo(newTodoName)
+            val newTodoId = newTodo.id
+            val newTodoURL = "http://localhost:3000/todos/${newTodoId}"
             val newTodoAsJsonString = mapper.writeValueAsString(newTodo)
+
             Response(CREATED)
                 .body(newTodoAsJsonString)
-                .headers(listOf("content-type" to "application/json"))
+                .header("content-type", "application/json")
+                .header("Location", newTodoURL)
         },
 
         "/todos/{todoId}" bind PATCH to {request: Request ->
@@ -69,7 +71,7 @@ class HttpApi(domain: Domain) {
 
                 Response(OK)
                     .body(updatedTodoAsJson)
-                    .headers(listOf("content-type" to "application/json"))
+                    .header("Content-Type", "application/json")
         },
 
         "/todos/{todoId}" bind GET to {request: Request ->
@@ -78,7 +80,7 @@ class HttpApi(domain: Domain) {
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)
-                .headers(listOf("content-type" to "application/json"))
+                .header("content-type", "application/json")
         },
 
         "/todos/{todoId}" bind DELETE to {request: Request ->
