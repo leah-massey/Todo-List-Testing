@@ -1,14 +1,20 @@
 package domain
 
-import domain.models.EssentialTodoValues
+import domain.models.TodoEssentials
 import domain.models.Todo
 import ports.TodoListRepo
 
 class ReadDomain(val todoListRepo: TodoListRepo) {
 
-    fun getEssentialFieldsTodoList(): List<EssentialTodoValues> {
-        return getTodoList().map{todo ->
-            selectEssentialTodoValues(todo)
+    fun getTodoListEssentials(todoId: String = ""): List<TodoEssentials> {
+        return getTodoList(todoId).map{todo ->
+            selectEssentialTodoFields(todo)
+        }
+    }
+
+    fun getTodoListEssentialsByStatus(status: String): List<TodoEssentials> {
+        return getTodosByStatus(status).map{todo ->
+            selectEssentialTodoFields(todo)
         }
     }
 
@@ -19,7 +25,7 @@ class ReadDomain(val todoListRepo: TodoListRepo) {
         }
     }
 
-    private fun getTodoList(todoId: String = ""): List<Todo>  {
+    fun getTodoList(todoId: String): List<Todo>  {
         val todoList: List<Todo> = todoListRepo.getTodos()
 
         if (todoId == "") {
@@ -30,8 +36,8 @@ class ReadDomain(val todoListRepo: TodoListRepo) {
         }
     }
 
-    private fun selectEssentialTodoValues(todo: Todo): EssentialTodoValues {
-        return EssentialTodoValues(id = todo.id, name = todo.name, status = todo.status)
+    private fun selectEssentialTodoFields(todo: Todo): TodoEssentials {
+        return TodoEssentials(id = todo.id, name = todo.name, status = todo.status)
     }
 
 }

@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import domain.ReadDomain
 import domain.WriteDomain
-import domain.models.EssentialTodoValues
+import domain.models.TodoEssentials
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.routing.*
@@ -21,13 +21,13 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
             val todoStatus: String = request.query("status") ?: ""
 
             if (todoStatus == "") {
-                val todoList: List<EssentialTodoValues> = readDomain.getEssentialFieldsTodoList()
+                val todoList: List<TodoEssentials> = readDomain.getTodoListEssentials()
                 val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
                 Response(OK)
                     .body(toDoListAsJsonString)
                     .header("content-type","application/json")
             } else {
-                val todoListFilteredByStatus: List<Todo> = readDomain.getTodosByStatus(todoStatus)
+                val todoListFilteredByStatus: List<TodoEssentials> = readDomain.getTodoListEssentialsByStatus(todoStatus)
                 val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
                 Response(OK)
                     .body(todoListFilteredByStatusAsJSONString)
@@ -67,7 +67,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                 writeDomain.markTodoAsNotDone(todoId)
             }
 
-            val updatedTodo: List<Todo> = readDomain.getTodoList(todoId)
+            val updatedTodo: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
             val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
 
                 Response(OK)
@@ -77,7 +77,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
         "/todos/{todoId}" bind GET to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is not valid
-            val todoItem: List<Todo> = readDomain.getTodoList(todoId)
+            val todoItem: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)
