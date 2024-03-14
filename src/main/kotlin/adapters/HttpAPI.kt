@@ -21,7 +21,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
             val todoStatus: String = request.query("status") ?: ""
 
             if (todoStatus == "") {
-                val todoList: List<EssentialTodoValues> = readDomain.getEssentialTodoList()
+                val todoList: List<EssentialTodoValues> = readDomain.getEssentialFieldsTodoList()
                 val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
                 Response(OK)
                     .body(toDoListAsJsonString)

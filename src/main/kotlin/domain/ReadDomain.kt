@@ -5,7 +5,21 @@ import domain.models.Todo
 import ports.TodoListRepo
 
 class ReadDomain(val todoListRepo: TodoListRepo) {
-    fun getTodoList(todoId: String = ""): List<Todo>  {
+
+    fun getEssentialFieldsTodoList(): List<EssentialTodoValues> {
+        return getTodoList().map{todo ->
+            selectEssentialTodoValues(todo)
+        }
+    }
+
+    fun getTodosByStatus(status: String): List<Todo> {
+        val todoList: List<Todo> = getTodoList("")
+        return todoList.filter { todo ->
+            todo.status == status
+        }
+    }
+
+    private fun getTodoList(todoId: String = ""): List<Todo>  {
         val todoList: List<Todo> = todoListRepo.getTodos()
 
         if (todoId == "") {
@@ -13,20 +27,6 @@ class ReadDomain(val todoListRepo: TodoListRepo) {
         } else {
             return todoList.filter {
                 it.id == todoId }
-        }
-    }
-
-    fun getEssentialTodoList(): List<EssentialTodoValues> {
-        return getTodoList().map{todo ->
-            selectEssentialTodoValues(todo)
-        }
-    }
-
-
-    fun getTodosByStatus(status: String): List<Todo> {
-        val todoList: List<Todo> = getTodoList("")
-        return todoList.filter { todo ->
-            todo.status == status
         }
     }
 
