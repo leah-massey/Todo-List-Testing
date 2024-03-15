@@ -10,6 +10,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import domain.ReadDomain
 import domain.WriteDomain
 import domain.models.TodoEssentials
+import domain.models.TodoEssentialsByStatus
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.routing.*
@@ -27,7 +28,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                     .body(toDoListAsJsonString)
                     .header("content-type","application/json")
             } else {
-                val todoListFilteredByStatus: List<TodoEssentials> = readDomain.getTodoListEssentialsByStatus(todoStatus)
+                val todoListFilteredByStatus: List<TodoEssentialsByStatus> = readDomain.getTodoListEssentialsByStatus(todoStatus)
                 val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
                 Response(OK)
                     .body(todoListFilteredByStatusAsJSONString)
