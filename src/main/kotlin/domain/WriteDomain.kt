@@ -1,11 +1,20 @@
 package domain
 
+import adapters.HttpApi
+import adapters.TodoListEventFileRepo
+import adapters.TodoListFileRepo
 import domain.models.Todo
+import domain.models.TodoCreatedEvent
+import org.http4k.core.then
+import org.http4k.filter.DebuggingFilters
+import org.http4k.server.SunHttp
+import org.http4k.server.asServer
+import ports.TodoListEventRepo
 import ports.TodoListRepo
 import java.time.LocalDateTime
 import java.util.*
 
-class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
+class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoListEventRepo, val readDomain: ReadDomain) {
 
     fun addTodo(todoName: String): Todo {
         val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
@@ -13,6 +22,22 @@ class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
         todoList.add(newTodoItem)
         todoListRepo.updateTodoList(todoList)
         return newTodoItem
+    }
+
+    fun createTodo(todoName: String): Todo {
+        val newTodo = Todo(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
+
+        val newTodoEvent = TodoCreatedEvent(
+        eventId = createID(),
+        eventCreatedDate = timeStamp(),
+        entityId = newTodo.id,
+        eventDetails = newTodo
+        )
+
+        todoListEventRepo.addEvent(newTodoEvent)
+
+        return newTodo
+
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {
@@ -65,4 +90,14 @@ class WriteDomain(val todoListRepo: TodoListRepo, val readDomain: ReadDomain) {
         return LocalDateTime.now().toString()
     }
 
+}
+
+fun main() {
+    val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
+    val todoListEventRepo: TodoListEventRepo = TodoListEventFileRepo("./src/resources/todo_list_event_log.ndjson")
+    val readDomain = ReadDomain(todoListRepo)
+    val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
+
+
+    println(writeDomain.createTodo("test"))
 }
