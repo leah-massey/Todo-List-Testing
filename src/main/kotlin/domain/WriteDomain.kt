@@ -5,6 +5,7 @@ import adapters.TodoListEventFileRepo
 import adapters.TodoListFileRepo
 import domain.models.Todo
 import domain.models.TodoCreatedEvent
+import domain.models.TodoEssentials
 import org.http4k.core.then
 import org.http4k.filter.DebuggingFilters
 import org.http4k.server.SunHttp
@@ -15,16 +16,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoListEventRepo, val readDomain: ReadDomain) {
-
-    fun addTodo(todoName: String): Todo {
-        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
-        val newTodoItem = Todo(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
-        todoList.add(newTodoItem)
-        todoListRepo.updateTodoList(todoList)
-        return newTodoItem
-    }
-
-    fun createTodo(todoName: String): Todo {
+    fun createTodo(todoName: String): TodoEssentials {
         val newTodo = Todo(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
 
         val newTodoEvent = TodoCreatedEvent(
@@ -33,11 +25,8 @@ class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoLis
         entityId = newTodo.id,
         eventDetails = newTodo
         )
-
         todoListEventRepo.addEvent(newTodoEvent)
-
-        return newTodo
-
+        return todoEssentials(newTodo)
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {

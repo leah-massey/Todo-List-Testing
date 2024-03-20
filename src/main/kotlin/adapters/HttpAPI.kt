@@ -39,7 +39,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
         "/todos" bind POST to {request: Request ->
             val newTodoData: String  = request.bodyString()  //todo handle errors
             val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
-            val newTodo = writeDomain.addTodo(newTodoName)
+            val newTodo = writeDomain.createTodo(newTodoName)
             val newTodoId = newTodo.id
             val newTodoURL = "http://localhost:3000/todos/${newTodoId}"
             val newTodoAsJsonString = mapper.writeValueAsString(newTodo)

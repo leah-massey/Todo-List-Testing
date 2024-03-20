@@ -46,14 +46,17 @@ class ReadDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoList
         return todoListEvents
     }
 
-    private fun todoEssentials(todo: Todo): TodoEssentials {
-        return TodoEssentials(id = todo.id, name = todo.name, status = todo.status)
-    }
+
 
     private fun todoEssentialsByStatus(todo: Todo): TodoEssentialsByStatus {
         return TodoEssentialsByStatus(id = todo.id, name = todo.name)
     }
 
+}
+
+// where should this be kept if it is used by both readDomain and writeDomain?
+fun todoEssentials(todo: Todo): TodoEssentials {
+    return TodoEssentials(id = todo.id, name = todo.name, status = todo.status)
 }
 
 fun main() {
