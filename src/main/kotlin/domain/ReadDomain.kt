@@ -16,15 +16,34 @@ class ReadDomain( val todoListEventRepo: TodoListEventRepo) {
     fun getTodoListEssentials(todoId: String = ""): List<TodoEssentials> {
         val todoListEvents: List<TodoEvent> = getTodoListEvents()
 
-        return todoListEvents.mapNotNull { todoEvent ->
-            when (todoEvent) {
-                is TodoCreatedEvent -> {
-                    val todo: Todo = todoEvent.eventDetails
-                    todoEssentials(todo)
+        if (todoId == "") {
+
+            return todoListEvents.mapNotNull { todoEvent ->
+                when (todoEvent) {
+                    is TodoCreatedEvent -> {
+                        val todo: Todo = todoEvent.eventDetails
+                        todoEssentials(todo)
+                    }
+
+                    else -> null
                 }
-                else -> null
+            }
+        } else {
+            val eventsForChosenId: List<TodoEvent> = todoListEvents.filter{ event ->
+                event.entityId == todoId
+            }
+            return eventsForChosenId.mapNotNull { todoEvent ->
+                when (todoEvent) {
+                    is TodoCreatedEvent -> {
+                        val todo: Todo = todoEvent.eventDetails
+                        todoEssentials(todo)
+                    }
+                    else -> null
+                }
             }
         }
+
+
     }
 
 //    fun getTodosByStatus(status: String): List<Todo> {
@@ -58,6 +77,5 @@ fun main() {
     val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
-    println(readDomain.getTodoListEvents())
-    println(readDomain.getTodoListEssentials())
+    println(readDomain.getTodoListEssentials("f90a4ef5-2953-4506-a0aa-38cf967c4c6d"))
 }
