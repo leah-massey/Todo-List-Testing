@@ -21,19 +21,22 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
         "/todos" bind GET to { request: Request ->
             val todoStatus: String = request.query("status") ?: ""
 
-            if (todoStatus == "") {
+//            if (todoStatus == "") {
                 val todoList: List<TodoEssentials> = readDomain.getTodoListEssentials()
+
                 val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
                 Response(OK)
                     .body(toDoListAsJsonString)
                     .header("content-type","application/json")
-            } else {
-                val todoListFilteredByStatus: List<TodoEssentialsByStatus> = readDomain.getTodoListEssentialsByStatus(todoStatus)
-                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
-                Response(OK)
-                    .body(todoListFilteredByStatusAsJSONString)
-                    .header("content-type", "application/json")
-            }
+//            }
+
+//            else {
+//                val todoListFilteredByStatus: List<TodoEssentialsByStatus> = readDomain.getTodoListEssentialsByStatus(todoStatus)
+//                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
+//                Response(OK)
+//                    .body(todoListFilteredByStatusAsJSONString)
+//                    .header("content-type", "application/json")
+//            }
         },
 
         "/todos" bind POST to {request: Request ->
@@ -50,31 +53,31 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                 .header("Location", newTodoURL)
         },
 
-        "/todos/{todoId}" bind PATCH to {request: Request ->
-            val todoId: String = request.path("todoId")!! // handle errors
-            val todoDataToUpdate: String = request.bodyString()
-            val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
-            val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
-
-            if (todoNameUpdate != null) {
-                writeDomain.updateTodoName(todoId, todoNameUpdate)
-            }
-
-            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
-                writeDomain.markTodoAsDone(todoId)
-            }
-
-            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
-                writeDomain.markTodoAsNotDone(todoId)
-            }
-
-            val updatedTodo: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
-            val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
-
-                Response(OK)
-                    .body(updatedTodoAsJson)
-                    .header("Content-Type", "application/json")
-        },
+//        "/todos/{todoId}" bind PATCH to {request: Request ->
+//            val todoId: String = request.path("todoId")!! // handle errors
+//            val todoDataToUpdate: String = request.bodyString()
+//            val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
+//            val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
+//
+//            if (todoNameUpdate != null) {
+//                writeDomain.updateTodoName(todoId, todoNameUpdate)
+//            }
+//
+//            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
+//                writeDomain.markTodoAsDone(todoId)
+//            }
+//
+//            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
+//                writeDomain.markTodoAsNotDone(todoId)
+//            }
+//
+//            val updatedTodo: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
+//            val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
+//
+//                Response(OK)
+//                    .body(updatedTodoAsJson)
+//                    .header("Content-Type", "application/json")
+//        },
 
         "/todos/{todoId}" bind GET to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is not valid
