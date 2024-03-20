@@ -1,11 +1,15 @@
 package domain
 
+import adapters.TodoListEventFileRepo
+import adapters.TodoListFileRepo
 import domain.models.TodoEssentials
 import domain.models.Todo
 import domain.models.TodoEssentialsByStatus
+import domain.models.TodoEvent
+import ports.TodoListEventRepo
 import ports.TodoListRepo
 
-class ReadDomain(val todoListRepo: TodoListRepo) {
+class ReadDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoListEventRepo) {
 
     fun getTodoListEssentials(todoId: String = ""): List<TodoEssentials> {
         return getTodoList(todoId).map{todo ->
@@ -37,6 +41,11 @@ class ReadDomain(val todoListRepo: TodoListRepo) {
         }
     }
 
+    fun getTodoListEvents(): List<TodoEvent> {
+        val todoListEvents: List<TodoEvent> = todoListEventRepo.getEvents()
+        return todoListEvents
+    }
+
     private fun todoEssentials(todo: Todo): TodoEssentials {
         return TodoEssentials(id = todo.id, name = todo.name, status = todo.status)
     }
@@ -45,4 +54,14 @@ class ReadDomain(val todoListRepo: TodoListRepo) {
         return TodoEssentialsByStatus(id = todo.id, name = todo.name)
     }
 
+}
+
+fun main() {
+    val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
+    val todoListEventRepo: TodoListEventRepo = TodoListEventFileRepo("./src/resources/todo_list_event_log.ndjson")
+    val readDomain = ReadDomain(todoListRepo, todoListEventRepo)
+    val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
+
+
+    println(readDomain.getTodoListEvents())
 }

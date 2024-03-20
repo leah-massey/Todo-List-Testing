@@ -95,9 +95,9 @@ class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoLis
 fun main() {
     val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
     val todoListEventRepo: TodoListEventRepo = TodoListEventFileRepo("./src/resources/todo_list_event_log.ndjson")
-    val readDomain = ReadDomain(todoListRepo)
+    val readDomain = ReadDomain(todoListRepo, todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
 
-    println(writeDomain.createTodo("test"))
+    println(writeDomain.createTodo("cat"))
 }
