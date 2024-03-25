@@ -40,10 +40,12 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         return TodoNameUpdate(id=updatedTodo.id, name=updatedTodo.name)
     }
 
-//    fun getDoneTodos() {
-//
-//    }
-
+    fun getTodoAfterStatusUpdate(todoId: String): TodoStatusUpdate {
+        val updatedTodo: Todo = getTodoList(todoId).find { todo ->
+            todo.id == todoId
+        }!!
+        return TodoStatusUpdate(id = updatedTodo.id, status = updatedTodo.status)
+    }
 
 
     private fun todoListClientViewByStatus(todo: Todo): TodoClientViewByStatus {

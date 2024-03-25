@@ -34,22 +34,32 @@ class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoLis
     }
 
 
+    fun markTodoAsDone(todoId: String): TodoStatusUpdate {
 
-    // update below to work for
+        val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
+            eventId = createID(),
+            eventCreatedDate = timeStamp(),
+            entityId = todoId,
+            eventDetails = TodoStatusUpdate(id = todoId, status = "DONE")
+        )
 
-//    fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {
-//        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
-//        var updatedTodo: Todo? = null
-//        for (todoItem in todoList) {
-//            if (todoItem.id == todoId) {
-//                todoItem.name = updatedTodoName
-//                todoItem.lastModifiedDate = LocalDateTime.now().toString()
-//                updatedTodo = todoItem
-//            }
-//        }
-//        todoListRepo.updateTodoList(todoList)
-//        return updatedTodo
-//    }
+        todoListEventRepo.addEvent(updatedStatusTodoEvent)
+        return updatedStatusTodoEvent.eventDetails
+    }
+
+    fun markTodoAsNotDone(todoId: String): TodoStatusUpdate {
+
+        val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
+            eventId = createID(),
+            eventCreatedDate = timeStamp(),
+            entityId = todoId,
+            eventDetails = TodoStatusUpdate(id = todoId, status = "NOT_DONE")
+        )
+
+        todoListEventRepo.addEvent(updatedStatusTodoEvent)
+        return updatedStatusTodoEvent.eventDetails
+    }
+
 
 //    fun markTodoAsDone(todoId: String): String {
 //        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
@@ -95,7 +105,8 @@ fun main() {
     val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
-println(writeDomain.createNewTodo("wash car"))
-//    println(writeDomain.updateTodoName("c94f495c-6f2e-4f4f-96b2-d2342e59e690", "dog"))
+println(writeDomain.markTodoAsDone("c94f495c-6f2e-4f4f-96b2-d2342e59e690"))
+//println(writeDomain.createNewTodo("wash car"))
+//    println(writeDomain.updateTodoName("c94f495c-6f2e-4f4f-96b2-d2342e59e690", "mouse"))
 
 }
