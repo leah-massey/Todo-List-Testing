@@ -6,45 +6,73 @@ import domain.models.*
 import ports.TodoListEventRepo
 import ports.TodoListRepo
 
-class ReadDomain( val todoListEventRepo: TodoListEventRepo) {
+class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
 
-    fun getTodoListEvents(): List<TodoEvent> {
-        val todoListEvents: List<TodoEvent> = todoListEventRepo.getEvents()
-        return todoListEvents
+    fun getTodoList(): List<Todo> {
+        val todoList = todoListEventRepo.getTodoList()
+        return todoList
     }
 
-    fun getTodoListEssentials(todoId: String = ""): List<TodoEssentials> {
-        val todoListEvents: List<TodoEvent> = getTodoListEvents()
-
+    fun getTodoListClientView(todoId: String = ""): List<TodoClientView> {
         if (todoId == "") {
-
-            return todoListEvents.mapNotNull { todoEvent ->
-                when (todoEvent) {
-                    is TodoCreatedEvent -> {
-                        val todo: Todo = todoEvent.eventDetails
-                        todoEssentials(todo)
-                    }
-
-                    else -> null
-                }
+            return getTodoList().map { todo ->
+                todoClientView(todo)
             }
         } else {
-            val eventsForChosenId: List<TodoEvent> = todoListEvents.filter{ event ->
-                event.entityId == todoId
-            }
-            return eventsForChosenId.mapNotNull { todoEvent ->
-                when (todoEvent) {
-                    is TodoCreatedEvent -> {
-                        val todo: Todo = todoEvent.eventDetails
-                        todoEssentials(todo)
-                    }
-                    else -> null
-                }
+            return getTodoList().filter { todo ->
+                todo.id == todoId
+            }.map { todo ->
+                todoClientView(todo)
             }
         }
-
-
     }
+
+    private fun todoListClientViewByStatus(todo: Todo): TodoClientViewByStatus {
+        return TodoClientViewByStatus(id = todo.id, name = todo.name)
+    }
+}
+
+
+// getTodoListEventsById
+
+// refactor and make it neater -
+//fun getTodoListClientView(todoId: String = ""): List<TodoClientView> {
+//    if (todoId == "") {
+//
+//        // fun getAllTodos()
+//        // todoListEventRepo.
+//
+//        return getTodoListEvents().mapNotNull { todoEvent ->
+//            when (todoEvent) {
+//                is TodoCreatedEvent -> {
+//                    val todo: Todo = todoEvent.eventDetails
+//                    todoClientView(todo)
+//                }
+//
+//                else -> null
+//            }
+//        }
+//    } else {
+//
+//        // getTodosById
+//
+//        val eventsForChosenId: List<TodoEvent> = getTodoListEvents().filter { event ->
+//            event.entityId == todoId
+//        }
+//        return eventsForChosenId.mapNotNull { todoEvent ->
+//            when (todoEvent) {
+//                is TodoCreatedEvent -> {
+//                    val todo: Todo = todoEvent.eventDetails
+//                    todoClientView(todo)
+//                }
+//
+//                else -> null
+//            }
+//        }
+//    }
+//
+//
+//}
 
 //    fun getTodosByStatus(status: String): List<Todo> {
 //        val todoList: List<Todo> = getTodoList("")
@@ -60,15 +88,9 @@ class ReadDomain( val todoListEventRepo: TodoListEventRepo) {
 //    }
 
 
-
-    private fun todoEssentialsByStatus(todo: Todo): TodoEssentialsByStatus {
-        return TodoEssentialsByStatus(id = todo.id, name = todo.name)
-    }
-}
-
 // where should this be kept if it is used by both readDomain and writeDomain?
-fun todoEssentials(todo: Todo): TodoEssentials {
-    return TodoEssentials(id = todo.id, name = todo.name, status = todo.status)
+fun todoClientView(todo: Todo): TodoClientView {
+    return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
 }
 
 fun main() {
@@ -77,5 +99,5 @@ fun main() {
     val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
-    println(readDomain.getTodoListEssentials("f90a4ef5-2953-4506-a0aa-38cf967c4c6d"))
+    println(readDomain.getTodoListClientView())
 }

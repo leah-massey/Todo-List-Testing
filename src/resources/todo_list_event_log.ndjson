@@ -1,25 +1,5 @@
-{
-  "eventType" : "TODO_CREATED",
-  "eventId" : "f7b5a191-3028-4007-903b-2d7c468471bc",
-  "eventCreatedDate" : "2024-03-18T15:30:48.829219",
-  "entityId" : "e01c4cb7-0fdf-49b8-917d-f7367251a3e9",
-  "eventDetails" : {
-    "id" : "e01c4cb7-0fdf-49b8-917d-f7367251a3e9",
-    "createdDate" : "2024-03-18T15:30:48.827946",
-    "lastModifiedDate" : "2024-03-18T15:30:48.828845",
-    "name" : "spin around",
-    "status" : "NOT_DONE"
-  }
-}{
-  "eventType" : "TODO_CREATED",
-  "eventId" : "f4be7180-aa8b-4374-8a3b-d99bff2815db",
-  "eventCreatedDate" : "2024-03-18T15:31:04.355701",
-  "entityId" : "3c657c6c-3984-4b74-888a-2adb2d7df19e",
-  "eventDetails" : {
-    "id" : "3c657c6c-3984-4b74-888a-2adb2d7df19e",
-    "createdDate" : "2024-03-18T15:31:04.353818",
-    "lastModifiedDate" : "2024-03-18T15:31:04.355187",
-    "name" : "test",
-    "status" : "NOT_DONE"
-  }
-}
+{"eventType":"TODO_CREATED","eventId":"4e04a84b-001e-4db0-8b31-f6cf24ba8a0c","eventCreatedDate":"2024-03-25T14:56:49.757290","entityId":"c94f495c-6f2e-4f4f-96b2-d2342e59e690","eventDetails":{"id":"c94f495c-6f2e-4f4f-96b2-d2342e59e690","createdTimestamp":"2024-03-25T14:56:49.756075","lastModifiedTimestamp":"2024-03-25T14:56:49.756941","name":"cat","status":"NOT_DONE"}}
+{"eventType":"TODO_NAME_UPDATED","eventId":"1783fd62-3c85-4d26-a034-0bd91d2d1f0d","eventCreatedDate":"2024-03-25T15:13:37.629916","entityId":"c94f495c-6f2e-4f4f-96b2-d2342e59e690","eventDetails":{"id":"c94f495c-6f2e-4f4f-96b2-d2342e59e690","name":"dog"}}
+{"eventType":"TODO_CREATED","eventId":"bf039b20-56e9-41ff-bfdc-11cebcf8098c","eventCreatedDate":"2024-03-25T15:14:06.321331","entityId":"bbeaa4dc-d8f8-4d03-b033-57aa367c01d0","eventDetails":{"id":"bbeaa4dc-d8f8-4d03-b033-57aa367c01d0","createdTimestamp":"2024-03-25T15:14:06.317530","lastModifiedTimestamp":"2024-03-25T15:14:06.319337","name":"wash car","status":"NOT_DONE"}}
+{"eventType":"TODO_CREATED","eventId":"f886dbfc-92c1-49c6-a12e-f61a71789e6b","eventCreatedDate":"2024-03-25T15:19:52.968517","entityId":"678d78d3-2f43-4409-98ad-4c707c9a376d","eventDetails":{"id":"678d78d3-2f43-4409-98ad-4c707c9a376d","createdTimestamp":"2024-03-25T15:19:52.967146","lastModifiedTimestamp":"2024-03-25T15:19:52.967902","name":"buy kittens","status":"NOT_DONE"}}
+{"eventType":"TODO_CREATED","eventId":"eec666dd-f6e7-4029-bd5d-9aa7a5546b10","eventCreatedDate":"2024-03-25T15:20:02.580216","entityId":"c0235c11-be37-44b7-ab07-857774e0921d","eventDetails":{"id":"c0235c11-be37-44b7-ab07-857774e0921d","createdTimestamp":"2024-03-25T15:20:02.580112","lastModifiedTimestamp":"2024-03-25T15:20:02.580143","name":"catch a hen","status":"NOT_DONE"}}

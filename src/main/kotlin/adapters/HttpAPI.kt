@@ -1,6 +1,5 @@
 package adapters
 
-import domain.models.Todo
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PATCH
@@ -9,8 +8,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import domain.ReadDomain
 import domain.WriteDomain
-import domain.models.TodoEssentials
-import domain.models.TodoEssentialsByStatus
+import domain.models.TodoClientView
+import domain.models.TodoNameUpdate
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.routing.*
@@ -19,10 +18,10 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
     val app: HttpHandler = routes(
         "/todos" bind GET to { request: Request ->
-            val todoStatus: String = request.query("status") ?: ""
+//            val todoStatus: String = request.query("status") ?: ""
 
 //            if (todoStatus == "") {
-                val todoList: List<TodoEssentials> = readDomain.getTodoListEssentials()
+                val todoList: List<TodoClientView> = readDomain.getTodoListClientView()
 
                 val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
                 Response(OK)
@@ -42,7 +41,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
         "/todos" bind POST to {request: Request ->
             val newTodoData: String  = request.bodyString()  //todo handle errors
             val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
-            val newTodo = writeDomain.createTodo(newTodoName)
+            val newTodo = writeDomain.createNewTodo(newTodoName)
             val newTodoId = newTodo.id
             val newTodoURL = "http://localhost:3000/todos/${newTodoId}"
             val newTodoAsJsonString = mapper.writeValueAsString(newTodo)
@@ -63,15 +62,15 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 //                writeDomain.updateTodoName(todoId, todoNameUpdate)
 //            }
 //
-//            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
-//                writeDomain.markTodoAsDone(todoId)
-//            }
+////            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
+////                writeDomain.markTodoAsDone(todoId)
+////            }
 //
-//            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
-//                writeDomain.markTodoAsNotDone(todoId)
-//            }
+////            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
+////                writeDomain.markTodoAsNotDone(todoId)
+////            }
 //
-//            val updatedTodo: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
+//            val updatedTodo: TodoNameUpdate = readDomain.getTodoAfterNameUpdate(todoId) // this needs work. I now have two events with the same Id. loop through and perform update
 //            val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
 //
 //                Response(OK)
@@ -81,7 +80,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
         "/todos/{todoId}" bind GET to {request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is not valid
-            val todoItem: List<TodoEssentials> = readDomain.getTodoListEssentials(todoId)
+            val todoItem: List<TodoClientView> = readDomain.getTodoListClientView(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)

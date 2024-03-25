@@ -1,23 +1,16 @@
 package domain
 
-import adapters.HttpApi
 import adapters.TodoListEventFileRepo
 import adapters.TodoListFileRepo
-import domain.models.Todo
-import domain.models.TodoCreatedEvent
-import domain.models.TodoEssentials
-import org.http4k.core.then
-import org.http4k.filter.DebuggingFilters
-import org.http4k.server.SunHttp
-import org.http4k.server.asServer
+import domain.models.*
 import ports.TodoListEventRepo
 import ports.TodoListRepo
 import java.time.LocalDateTime
 import java.util.*
 
 class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoListEventRepo, val readDomain: ReadDomain) {
-    fun createTodo(todoName: String): TodoEssentials {
-        val newTodo = Todo(id = createID(), createdDate = timeStamp(), lastModifiedDate = timeStamp(), name = todoName)
+    fun createNewTodo(todoName: String): TodoClientView {
+        val newTodo = Todo(id = createID(), createdTimestamp = timeStamp(), lastModifiedTimestamp = timeStamp(), name = todoName)
 
         val newTodoEvent = TodoCreatedEvent(
         eventId = createID(),
@@ -26,50 +19,65 @@ class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoLis
         eventDetails = newTodo
         )
         todoListEventRepo.addEvent(newTodoEvent)
-        return todoEssentials(newTodo)
+        return todoClientView(newTodo)
+    }
+    fun updateTodoName(todoId: String, updatedTodoName: String): TodoNameUpdate {
+
+        val updatedNameTodoEvent = TodoNameUpdatedEvent(
+            eventId = createID(),
+            eventCreatedDate = timeStamp(),
+            entityId = todoId,
+            eventDetails = TodoNameUpdate(id = todoId, name = updatedTodoName)
+        )
+        todoListEventRepo.addEvent(updatedNameTodoEvent)
+        return updatedNameTodoEvent.eventDetails
     }
 
-    fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {
-        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
-        var updatedTodo: Todo? = null
-        for (todoItem in todoList) {
-            if (todoItem.id == todoId) {
-                todoItem.name = updatedTodoName
-                todoItem.lastModifiedDate = LocalDateTime.now().toString()
-                updatedTodo = todoItem
-            }
-        }
-        todoListRepo.updateTodoList(todoList)
-        return updatedTodo
-    }
 
-    fun markTodoAsDone(todoId: String): String {
-        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
-        var nameOfUpdatedTodo: String? = null
-        for (todoItem in todoList) {
-            if (todoItem.id == todoId) {
-                todoItem.status = "DONE"
-                todoItem.lastModifiedDate = LocalDateTime.now().toString()
-                nameOfUpdatedTodo = todoItem.name
-            }
-        }
-        todoListRepo.updateTodoList(todoList)
-        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'DONE'."
-    }
 
-    fun markTodoAsNotDone(todoId: String): String {
-        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
-        var nameOfUpdatedTodo: String? = null
-        for (todoItem in todoList) {
-            if (todoItem.id == todoId) {
-                todoItem.status = "NOT_DONE"
-                todoItem.lastModifiedDate = LocalDateTime.now().toString()
-                nameOfUpdatedTodo = todoItem.name
-            }
-        }
-        todoListRepo.updateTodoList(todoList)
-        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'NOT_DONE'."
-    }
+    // update below to work for
+
+//    fun updateTodoName(todoId: String, updatedTodoName: String): Todo? {
+//        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
+//        var updatedTodo: Todo? = null
+//        for (todoItem in todoList) {
+//            if (todoItem.id == todoId) {
+//                todoItem.name = updatedTodoName
+//                todoItem.lastModifiedDate = LocalDateTime.now().toString()
+//                updatedTodo = todoItem
+//            }
+//        }
+//        todoListRepo.updateTodoList(todoList)
+//        return updatedTodo
+//    }
+
+//    fun markTodoAsDone(todoId: String): String {
+//        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
+//        var nameOfUpdatedTodo: String? = null
+//        for (todoItem in todoList) {
+//            if (todoItem.id == todoId) {
+//                todoItem.status = "DONE"
+//                todoItem.lastModifiedDate = LocalDateTime.now().toString()
+//                nameOfUpdatedTodo = todoItem.name
+//            }
+//        }
+//        todoListRepo.updateTodoList(todoList)
+//        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'DONE'."
+//    }
+
+//    fun markTodoAsNotDone(todoId: String): String {
+//        val todoList: MutableList<Todo> = readDomain.getTodoList("").toMutableList()
+//        var nameOfUpdatedTodo: String? = null
+//        for (todoItem in todoList) {
+//            if (todoItem.id == todoId) {
+//                todoItem.status = "NOT_DONE"
+//                todoItem.lastModifiedDate = LocalDateTime.now().toString()
+//                nameOfUpdatedTodo = todoItem.name
+//            }
+//        }
+//        todoListRepo.updateTodoList(todoList)
+//        return "The status of your todo '${nameOfUpdatedTodo}' has been updated to 'NOT_DONE'."
+//    }
 
     private fun createID(): String {
         return UUID.randomUUID().toString()
@@ -84,9 +92,10 @@ class WriteDomain(val todoListRepo: TodoListRepo, val todoListEventRepo: TodoLis
 fun main() {
     val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
     val todoListEventRepo: TodoListEventRepo = TodoListEventFileRepo("./src/resources/todo_list_event_log.ndjson")
-    val readDomain = ReadDomain(todoListRepo, todoListEventRepo)
+    val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
+println(writeDomain.createNewTodo("wash car"))
+//    println(writeDomain.updateTodoName("c94f495c-6f2e-4f4f-96b2-d2342e59e690", "dog"))
 
-    println(writeDomain.createTodo("cat"))
 }

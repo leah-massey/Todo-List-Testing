@@ -1,6 +1,6 @@
 package domain.models
 
-data class TodoEssentials(
+data class TodoClientView(
     val id: String,
     val name: String,
     val status: String

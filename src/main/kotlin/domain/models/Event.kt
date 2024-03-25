@@ -8,28 +8,28 @@ open class TodoEvent(
 )
 
 class TodoCreatedEvent(
-    eventType: String = "TODO_CREATED", // not sure why naming was not accepted at eventType, also.
+    eventType: String = "TODO_CREATED",
     eventId: String,
     eventCreatedDate: String,
     entityId: String,
     val eventDetails: Todo
 ): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
 
-data class TodoNameUpdatedEvent(
-    val todoEventType: String = "TODO_NAME_UPDATED",
-    val todoEventId: String,
-    val todoEventCreatedDate: String,
-    val todoEntityId: String,
+class TodoNameUpdatedEvent(
+    eventType: String = "TODO_NAME_UPDATED",
+    eventId: String,
+    eventCreatedDate: String,
+    entityId: String,
     val eventDetails: TodoNameUpdate
-): TodoEvent(eventType = todoEventType, eventId = todoEventId, eventCreatedDate = todoEventCreatedDate, entityId = todoEntityId)
+): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
 
-data class TodoStatusUpdatedEvent(
-    val todoEventType: String = "TODO_NAME_UPDATED",
-    val todoEventId: String,
-    val todoEventCreatedDate: String,
-    val todoEntityId: String,
+class TodoStatusUpdatedEvent(
+    eventType: String = "TODO_STATUS_UPDATED",
+    eventId: String,
+    eventCreatedDate: String,
+    entityId: String,
     val eventDetails: TodoStatusUpdate
-): TodoEvent(eventType = todoEventType, eventId = todoEventId, eventCreatedDate = todoEventCreatedDate, entityId = todoEntityId)
+): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
 
 
 
