@@ -8,9 +8,14 @@ import ports.TodoListRepo
 
 class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
 
-    fun getTodoList(): List<Todo> {
-        val todoList = todoListEventRepo.getTodoList()
-        return todoList
+    fun getTodoList(todoId: String = ""): List<Todo> {
+        if (todoId == "") {
+            return todoListEventRepo.getTodoList()
+        } else {
+            return todoListEventRepo.getTodoList().filter { todo ->
+                todo.id == todoId
+            }
+        }
     }
 
     fun getTodoListClientView(todoId: String = ""): List<TodoClientView> {
@@ -26,6 +31,20 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
             }
         }
     }
+
+    fun getTodoAfterNameUpdate(todoId: String): TodoNameUpdate {
+        val updatedTodo: Todo = getTodoList(todoId).find {todo ->
+            todo.id == todoId
+        }!!
+
+        return TodoNameUpdate(id=updatedTodo.id, name=updatedTodo.name)
+    }
+
+//    fun getDoneTodos() {
+//
+//    }
+
+
 
     private fun todoListClientViewByStatus(todo: Todo): TodoClientViewByStatus {
         return TodoClientViewByStatus(id = todo.id, name = todo.name)
