@@ -21,24 +21,22 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
     val app: HttpHandler = routes(
         "/todos" bind GET to { request: Request ->
-//            val todoStatus: String = request.query("status") ?: ""
+            val todoStatus: String = request.query("status") ?: ""
 
-//            if (todoStatus == "") {
-            val todoList: List<TodoClientView> = readDomain.getTodoListClientView()
+            if (todoStatus == "") {
+                val todoList: List<TodoClientView> = readDomain.getTodoListClientView()
 
-            val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
-            Response(OK)
-                .body(toDoListAsJsonString)
-                .header("content-type", "application/json")
-//            }
-
-//            else {
-//                val todoListFilteredByStatus: List<TodoEssentialsByStatus> = readDomain.getTodoListEssentialsByStatus(todoStatus)
-//                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
-//                Response(OK)
-//                    .body(todoListFilteredByStatusAsJSONString)
-//                    .header("content-type", "application/json")
-//            }
+                val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
+                Response(OK)
+                    .body(toDoListAsJsonString)
+                    .header("content-type", "application/json")
+            } else {
+                val todoListFilteredByStatus: List<TodoClientView> = readDomain.getTodoListByStatusClientView(todoStatus)
+                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
+                Response(OK)
+                    .body(todoListFilteredByStatusAsJSONString)
+                    .header("content-type", "application/json")
+            }
         },
 
         "/todos" bind POST to { request: Request ->
@@ -71,8 +69,6 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                     .header("Content-Type", "application/json")
             }
 
-
-
             if (todoStatusUpdate == "DONE") {
                 val updatedTodoStatusDone: TodoStatusUpdate = readDomain.getTodoAfterStatusUpdate(todoId)
                 val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
@@ -88,41 +84,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                     .body(updatedTodoAsJson)
                     .header("Content-Type", "application/json")
             }
-
-
             Response(BAD_REQUEST)
-
-
-            //            if (todoStatusUpdate == "DONE") {
-            //                writeDomain.markTodoAsDone(todoId)
-            //                val updatedTodoStatusDone: TodoStatusUpdate = readDomain.getTodoAfterStatusUpdate(todoId)
-            //                val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
-            //                Response(OK)
-            //                    .body(updatedTodoAsJson)
-            //                    .header("Content-Type", "application/json")
-            //
-            //            } else if (todoStatusUpdate == "NOT_DONE") {
-            //                writeDomain.markTodoAsNotDone(todoId)
-            //                val updatedTodoStatusNotDone: TodoStatusUpdate = readDomain.getTodoAfterStatusUpdate(todoId)
-            //                val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusNotDone)
-            //                Response(OK)
-            //                    .body(updatedTodoAsJson)
-            //                    .header("Content-Type", "application/json")
-            //            }
-
-
-            //            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
-            //                writeDomain.markTodoAsDone(todoId)
-            //                val updatedTodoStatusDone: TodoStatusUpdate = readDomain.
-            //            }
-
-
-            //            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
-            //                writeDomain.markTodoAsNotDone(todoId)
-            //            }
-
-            // this needs work. I now have two events with the same Id. loop through and perform update
-
         },
 
         "/todos/{todoId}" bind GET to { request: Request ->
@@ -133,8 +95,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                 .body(toDoListAsJsonString)
                 .header("content-type", "application/json")
         },
-
-        )
+    )
 
     private val mapper: ObjectMapper = jacksonObjectMapper()
 }

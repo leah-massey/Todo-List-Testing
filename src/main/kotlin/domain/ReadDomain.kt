@@ -18,6 +18,18 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
+    private fun getTodoListByStatus(status: String): List<Todo> {
+        return getTodoList().filter{todo ->
+            todo.status == status
+        }
+    }
+
+    fun getTodoListByStatusClientView(status: String): List<TodoClientView> {
+        return getTodoListByStatus(status).map{ todo ->
+            todoClientView(todo)
+        }
+    }
+
     fun getTodoListClientView(todoId: String = ""): List<TodoClientView> {
         if (todoId == "") {
             return getTodoList().map { todo ->
@@ -120,5 +132,6 @@ fun main() {
     val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
-    println(readDomain.getTodoListClientView())
+//    println(readDomain.getTodoListClientView())
+    println(readDomain.getTodoListByStatusClientView("DONE"))
 }

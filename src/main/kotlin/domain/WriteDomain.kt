@@ -105,7 +105,7 @@ fun main() {
     val readDomain = ReadDomain(todoListEventRepo)
     val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
 
-println(writeDomain.markTodoAsDone("c94f495c-6f2e-4f4f-96b2-d2342e59e690"))
+//println(writeDomain.markTodoAsDone("c94f495c-6f2e-4f4f-96b2-d2342e59e690"))
 //println(writeDomain.createNewTodo("wash car"))
 //    println(writeDomain.updateTodoName("c94f495c-6f2e-4f4f-96b2-d2342e59e690", "mouse"))
 
