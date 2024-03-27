@@ -8,7 +8,7 @@ Each update made by the user is recorded using Event Sourcing.
 ### To note: 
 This is a learning project, with some comments left in for personal reference / feedback
 
-This project was built without the use of TDD, for reasons of speed, and no testing has been done. This is not best practise but for the focus of this exercise is deemed acceptable. 
+The focus of the project was to understand event sourcing. The project was built without the use of TDD, for reasons of speed, and no testing has been done. This is not best practise but for the focus of this exercise is deemed acceptable. 
 
 For similar reasons, there are no architecture diagrams for this project, although [Endpoints.md](src/resources/Endpoints.md) can be viewed to see expected outcomes.
 
@@ -16,7 +16,7 @@ For similar reasons, there are no architecture diagrams for this project, althou
 ### Getting started  
  To run this project and run from your IDE:
 
-```git clone https://github.com/leah-massey/Kotlin-Todo-List.git```
+```git clone https://github.com/leah-massey/Todo-List-Event-Sourcing-Kotlin.git```
 
 
 To start the server, run the main function located here: 
