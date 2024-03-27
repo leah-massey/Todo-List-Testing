@@ -12,10 +12,9 @@ import org.http4k.server.asServer
 import ports.TodoListEventRepo
 
 fun main() {
-    val todoListRepo: TodoListRepo = TodoListFileRepo("./src/resources/todo_list.json")
     val todoListEventRepo: TodoListEventRepo = TodoListEventFileRepo("./src/resources/todo_list_event_log.ndjson")
     val readDomain = ReadDomain(todoListEventRepo)
-    val writeDomain = WriteDomain(todoListRepo, todoListEventRepo, readDomain)
+    val writeDomain = WriteDomain(todoListEventRepo)
     val httpApi = HttpApi(readDomain, writeDomain)
 
     val printingApp: HttpHandler = DebuggingFilters.PrintRequest().then(httpApi.app)
