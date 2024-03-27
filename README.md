@@ -1,17 +1,16 @@
 # TodoList
 
-In this application a user can view, add, update and delete their todos. 
+In this application a user can view, add and update the name or status of their todos. 
 
-Each update is recorded using Event Sourcing.
+Each update made by the user is recorded using Event Sourcing.
 
-Initially, the todo list is emt
 
 ### To note: 
 This is a learning project, with some comments left in for personal reference / feedback
 
 This project was built without the use of TDD, for reasons of speed, and no testing has been done. This is not best practise but for the focus of this exercise is deemed acceptable. 
 
-For similar reasons, there are no architecture diagrams for this project, although Endpoints.md will demonstrate expected outcomes.
+For similar reasons, there are no architecture diagrams for this project, although [Endpoints.md](src/resources/Endpoints.md) can be viewed to see expected outcomes.
 
 
 ### Getting started  
