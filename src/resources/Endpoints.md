@@ -1,9 +1,9 @@
 ## - API Docs:
-
+Below are example request/response scenarios for all endpoints created for this project.
 
 ### Get all todos: 
 
-GET /todos
+```GET /todos```
 
 Response:
 
@@ -11,15 +11,11 @@ Response:
  {
     id: "123456",
     name: "climb a drainpipe",
-    createdDate: "2024-02-27T13:48:43.999Z+1" 
-    modifiedDate: "2024-03-17T15:48:43.9456+1"
     status: "NOT_DONE"
 },
 {
     id: "567891",
     name: "jump a puddle",
-    createdDate: "2024-05-27T13:48:43.999Z+1"
-    modifiedDate: "2024-05-27T13:48:43.999Z+1"
     status: "DONE"
 } 
 ```
@@ -28,7 +24,7 @@ Response:
 
 ### Get todos by status:
 
-GET /todos?status=DONE
+```GET /todos?status=DONE```
 
 Response:
 
@@ -36,9 +32,6 @@ Response:
 {
     id: "567891",
     name: "jump a puddle",
-    createdDate: "2024-05-27T13:48:43.999Z+1"
-    modifiedDate: "2024-05-27T13:48:43.999Z+1"
-    status: "DONE"
 }
 ```
 
@@ -46,7 +39,7 @@ Response:
 
 ### Get todo by ID
 
-GET /todos/123456
+```GET /todos/123456```
 
 Response:
 
@@ -54,8 +47,6 @@ Response:
 {
     id: "123456",
     name: "climb a drainpipe",
-    createdDate: "2024-02-27T13:48:43.999Z+1"
-    modifiedDate: "2024-03-17T15:48:43.9456+1"
     status: "NOT_DONE"
 }
 ```
@@ -64,7 +55,9 @@ Response:
 
 ### Add a todo
 
-POST /todos
+```POST /todos```
+
+Request:
 
 ```
 {
@@ -74,13 +67,21 @@ POST /todos
 
 Response:
 
-"'sit on a log' has been added as a todo."
+```
+{
+    id: "456789",
+    name: "sit on a log",
+    status: "NOT_DONE"
+}
+```
 
 ---------------
 
 ### Update the name of a todo
 
-PUT /todos/123456
+```PATCH /todos/123456```
+
+Request:
 
 ```
 {
@@ -90,13 +91,21 @@ PUT /todos/123456
 
 Response:
 
-"Your todo has been updated to 'climb a very long drainpipe'."
+```
+{
+id: "123456",
+name: "climb a very long drainpipe",
+status: "NOT_DONE"
+}
+```
 
 ---------------
 
 ### Update the status of a todo
 
-PUT /todos/123456
+```PATCH /todos/123456```
+
+Request: 
 
 ```
 {
@@ -106,17 +115,15 @@ PUT /todos/123456
 
 Response:
 
-"The status of your todo 'swim in jelly' has been updated to 'DONE'."
+```
+{
+id: "123456",
+name: "climb a very long drainpipe",
+status: "DONE"
+}
+```
 
 ---------------
-
-### Delete a todo 
-
-DELETE /todos/123456
-
-Response: 
-
-"Your todo 'dance on marbles' has been deleted."
 
 
 

@@ -1,15 +1,18 @@
 # TodoList
 
-In this application a user can view, add, update and delete their todos. It is the starting point for an exploration of Event Sourcing.
+In this application a user can view, add, update and delete their todos. 
+
+Each update is recorded using Event Sourcing.
+
+Initially, the todo list is emt
 
 ### To note: 
-This is a learning project, with some comments left in for personal reference. 
+This is a learning project, with some comments left in for personal reference / feedback
 
 This project was built without the use of TDD, for reasons of speed, and no testing has been done. This is not best practise but for the focus of this exercise is deemed acceptable. 
 
+For similar reasons, there are no architecture diagrams for this project, although Endpoints.md will demonstrate expected outcomes.
 
-### TODO: 
-I will be using this project as the base for exploring Event Sourcing
 
 ### Getting started  
  To run this project and run from your IDE:
@@ -20,9 +23,9 @@ I will be using this project as the base for exploring Event Sourcing
 To start the server, run the main function located here: 
 ```src/main/kotlin/Main.kt```
 
-When the server is running, the endpoints can be called from Postman. 
-For example, to get all todos, run a GET request of the following:
-```http://localhost:3000/todos```
+When the server is running, the endpoints can be called from [Postman](https://www.postman.com/) (or the command line tools of your choice). 
+
+See all possible endpoints, with examples [here](src/resources/Endpoints.md).
 
 ## Package
 ```

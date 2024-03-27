@@ -1,45 +1,45 @@
 package adapters
 
-import domain.Domain
-import domain.models.TodoItem
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.POST
 import org.http4k.core.Method.PATCH
-import org.http4k.core.Method.DELETE
 import org.http4k.core.Status.Companion.OK
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import domain.ReadDomain
+import domain.WriteDomain
+import domain.models.Todo
+import domain.models.TodoClientView
+import domain.models.TodoNameUpdate
+import domain.models.TodoStatusUpdate
 import org.http4k.core.*
+import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
 import org.http4k.routing.*
 
-class HttpApi(domain: Domain) {
+class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
     val app: HttpHandler = routes(
         "/todos" bind GET to { request: Request ->
             val todoStatus: String = request.query("status") ?: ""
 
-            if (todoStatus == "") {
-                val todoList: List<TodoItem> = domain.getTodoList()
-                val toDoListAsJsonString: String = mapper.writeValueAsString(todoList)
-                Response(OK)
-                    .body(toDoListAsJsonString)
-                    .header("content-type","application/json")
+            val todoList: List<TodoClientView> = if (todoStatus.isEmpty()) {
+                readDomain.getTodoListClientView()
             } else {
-                val todoListFilteredByStatus: List<TodoItem> = domain.getItemsByStatus(todoStatus)
-                val todoListFilteredByStatusAsJSONString: String = mapper.writeValueAsString(todoListFilteredByStatus)
-                Response(OK)
-                    .body(todoListFilteredByStatusAsJSONString)
-                    .header("content-type", "application/json")
+                readDomain.getTodoListByStatusClientView(todoStatus)
             }
+
+            val todoListAsJsonString: String = mapper.writeValueAsString(todoList)
+            Response(OK)
+                .body(todoListAsJsonString)
+                .header("content-type", "application/json")
         },
 
-        "/todos" bind POST to {request: Request ->
-            val newTodoData: String  = request.bodyString()  //todo handle errors
-            val newTodoName: String = mapper.readTree(newTodoData).get("name").asText()
-            val newTodo = domain.addTodo(newTodoName)
+        "/todos" bind POST to { request: Request ->
+            val newTodoName: String = mapper.readTree(request.bodyString()).get("name").asText() //todo handle errors
+            val newTodo = writeDomain.createNewTodo(newTodoName)
             val newTodoId = newTodo.id
-            val newTodoURL = "http://localhost:3000/todos/${newTodoId}"
+            val newTodoURL = "http://localhost:3000/todos/${newTodoId}" // not sure if this is correct?!
             val newTodoAsJsonString = mapper.writeValueAsString(newTodo)
 
             Response(CREATED)
@@ -48,47 +48,48 @@ class HttpApi(domain: Domain) {
                 .header("Location", newTodoURL)
         },
 
-        "/todos/{todoId}" bind PATCH to {request: Request ->
+        "/todos/{todoId}" bind PATCH to bind@{ request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors
             val todoDataToUpdate: String = request.bodyString()
             val todoNameUpdate: String? = mapper.readTree(todoDataToUpdate).get("name")?.asText()
             val todoStatusUpdate: String? = mapper.readTree(todoDataToUpdate).get("status")?.asText()
 
-            if (todoNameUpdate != null) {
-                domain.updateTodoName(todoId, todoNameUpdate)
-            }
-
-            if (todoStatusUpdate != null && todoStatusUpdate == "DONE") {
-                domain.markTodoAsDone(todoId)
-            }
-
-            if (todoStatusUpdate != null && todoStatusUpdate == "NOT_DONE") {
-                domain.markTodoAsNotDone(todoId)
-            }
-
-            val updatedTodo: List<TodoItem> = domain.getTodoList(todoId)
-            val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
-
-                Response(OK)
-                    .body(updatedTodoAsJson)
-                    .header("Content-Type", "application/json")
+            val response: Response =
+                when {
+                    todoNameUpdate != null -> {
+                        val updatedTodo: TodoNameUpdate = writeDomain.updateTodoName(todoId, todoNameUpdate)
+                        val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
+                        Response(OK)
+                            .body(updatedTodoAsJson)
+                            .header("Content-Type", "application/json")
+                    }
+                    todoStatusUpdate == "DONE" -> {
+                        val updatedTodoStatusDone: TodoStatusUpdate = writeDomain.markTodoAsDone(todoId)
+                        val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
+                        Response(OK)
+                            .body(updatedTodoAsJson)
+                            .header("Content-Type", "application/json")
+                    }
+                    todoStatusUpdate == "NOT_DONE" -> {
+                        val updatedTodoStatusDone: TodoStatusUpdate = writeDomain.markTodoAsNotDone(todoId)
+                        val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
+                        Response(OK)
+                            .body(updatedTodoAsJson)
+                            .header("Content-Type", "application/json")
+                    }
+                    else -> Response(BAD_REQUEST)
+                }
+            return@bind response
         },
 
-        "/todos/{todoId}" bind GET to {request: Request ->
+        "/todos/{todoId}" bind GET to { request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is not valid
-            val todoItem: List<TodoItem> = domain.getTodoList(todoId)
+            val todoItem: List<TodoClientView> = readDomain.getTodoListClientView(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)
                 .header("content-type", "application/json")
         },
-
-        "/todos/{todoId}" bind DELETE to {request: Request ->
-            val todoId: String = request.path("todoId")!!
-            val todoDeletionConfirmation = domain.deleteTodo(todoId)
-            Response(OK).body(todoDeletionConfirmation)
-        }
-
     )
 
     private val mapper: ObjectMapper = jacksonObjectMapper()
