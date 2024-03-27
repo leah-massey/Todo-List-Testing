@@ -11,10 +11,10 @@ import java.io.FileWriter
 class TodoListEventFileRepo(filePath: String) : TodoListEventRepo {
     val eventFileRepo = File(filePath)
     override fun addEvent(event: TodoEvent) {
-        val fileWriter = FileWriter(
+        val fileWriter = FileWriter( // FileWriter object created for eventFile. True param means that data will be appended to file if it already exists (false param would mean that the data in the file would be overwritten)
             eventFileRepo,
             true
-        ) // FileWriter object created for eventFile. True param means that data will be appended to file if it already exists (false param would mean that the data in the file would be overwritten)
+        )
         val eventAsJsonString = mapper.writer().writeValueAsString(event)
         fileWriter.write(eventAsJsonString + "\n")
         fileWriter.close()
@@ -26,8 +26,8 @@ class TodoListEventFileRepo(filePath: String) : TodoListEventRepo {
         var line: String?
 
         while (fileReader.readLine()
-                .also { line = it } != null
-        ) {  // read each line, assigning each line to it for each loop. 'it' then represents an event
+                .also { line = it } != null // read each line, assigning each line to it for each loop. 'it' then represents an event
+        ) {
             val jsonNode = mapper.readTree(line) // parse the JSON string representation of the event into a JsonNode
             val eventType = jsonNode.get("eventType")?.asText()
             val event: TodoEvent? = when (eventType) {
@@ -59,7 +59,7 @@ class TodoListEventFileRepo(filePath: String) : TodoListEventRepo {
             if (todoExistsAlready) {
                 todoList.forEach { todo ->
                     if (todo.id == idToCheck) { // Find matching todo and update accordingly
-                        if (event is TodoNameUpdatedEvent) { // cast type to TodoNameUpdatedEvent
+                        if (event is TodoNameUpdatedEvent) { // cast type to TodoNameUpdatedEvent so that I can call .eventDetails
                             todo.name = event.eventDetails.name
                             todo.lastModifiedTimestamp = event.eventCreatedDate
                         } else if (event is TodoStatusUpdatedEvent) {
@@ -69,7 +69,7 @@ class TodoListEventFileRepo(filePath: String) : TodoListEventRepo {
                     }
                 }
             } else {
-                if (event is TodoCreatedEvent) { // have to write this line to cast type to TodoCreatedEvent
+                if (event is TodoCreatedEvent) { // cast type to TodoNameUpdatedEvent so that I can call .eventDetails
                     todoList.add(
                         Todo(
                             id = event.entityId,
