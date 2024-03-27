@@ -24,8 +24,8 @@ To start the server, run the main function located here:
 ```src/main/kotlin/Main.kt```
 
 When the server is running, the endpoints can be called from [Postman](https://www.postman.com/) (or the command line tools of your choice). 
-For example, to get all todos, run a GET request of the following:
-```http://localhost:3000/todos```
+
+See all possible endpoints, with examples [here](src/resources/Endpoints.md).
 
 ## Package
 ```
