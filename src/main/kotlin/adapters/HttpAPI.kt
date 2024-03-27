@@ -56,6 +56,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
             val response: Response = when {
                 todoNameUpdate != null -> {
+                    writeDomain.updateTodoName(todoId = todoId, updatedTodoName = todoNameUpdate)
                     val updatedTodo: TodoNameUpdate = readDomain.getTodoAfterNameUpdate(todoId)
                     val updatedTodoAsJson = mapper.writeValueAsString(updatedTodo)
                     Response(OK)
