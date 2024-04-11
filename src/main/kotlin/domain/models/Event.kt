@@ -1,35 +1,33 @@
 package domain.models
 
-open class TodoEvent(
-    val eventType: String,
-    val eventId: String,
-    val eventCreatedDate: String,
-    val entityId: String,
-)
+sealed class TodoEvent {
+    abstract val eventType: String
+    abstract val eventId: String
+    abstract val eventCreatedDate: String
+    abstract val entityId: String
+}
 
 class TodoCreatedEvent(
-    eventType: String = "TODO_CREATED",
-    eventId: String,
-    eventCreatedDate: String,
-    entityId: String,
+    override val eventType: String = "TODO_CREATED",
+    override val eventId: String,
+    override val eventCreatedDate: String,
+    override val entityId: String,
     val eventDetails: Todo
-): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
+): TodoEvent()
 
 class TodoNameUpdatedEvent(
-    eventType: String = "TODO_NAME_UPDATED",
-    eventId: String,
-    eventCreatedDate: String,
-    entityId: String,
+    override val eventType: String = "TODO_NAME_UPDATED",
+    override val eventId: String,
+    override val eventCreatedDate: String,
+    override val entityId: String,
     val eventDetails: TodoNameUpdate
-): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
+): TodoEvent()
 
 class TodoStatusUpdatedEvent(
-    eventType: String = "TODO_STATUS_UPDATED",
-    eventId: String,
-    eventCreatedDate: String,
-    entityId: String,
+    override val eventType: String = "TODO_STATUS_UPDATED",
+    override val eventId: String,
+    override val eventCreatedDate: String,
+    override val entityId: String,
     val eventDetails: TodoStatusUpdate
-): TodoEvent(eventType, eventId, eventCreatedDate, entityId)
-
-
+): TodoEvent()
 
