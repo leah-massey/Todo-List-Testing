@@ -6,29 +6,29 @@ import ports.TodoListEventRepo
 
 class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
 
-    fun getTodoListClientView(todoId: String = ""): List<TodoClientView> {
-        if (todoId == "") {
+    fun getTodoListClientView(todoId: String?): List<TodoClientView> {
+        if (todoId == null) {
             return getTodoList().map { todo ->
-                todoClientView(todo)
+                readDomainTodoClientView(todo)
             }
         } else {
             return getTodoList().filter { todo ->
                 todo.id == todoId
             }.map { todo ->
-                todoClientView(todo)
+                readDomainTodoClientView(todo)
             }
         }
     }
 
     fun getTodoListByStatusDoneClientView(): List<TodoClientView> {
         return getTodoListByStatusDone().map { todo ->
-            todoClientView(todo)
+            readDomainTodoClientView(todo)
         }
     }
 
     fun getTodoListByStatusNotDoneClientView(): List<TodoClientView> {
         return getTodoListByStatusNotDone().map { todo ->
-            todoClientView(todo)
+            readDomainTodoClientView(todo)
         }
     }
 
@@ -54,12 +54,10 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
-    private fun todoClientView(todo: Todo): TodoClientView {
+    private fun readDomainTodoClientView(todo: Todo): TodoClientView {
         return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
     }
 }
 
-
-// where should this be kept if it is used by both readDomain and writeDomain?
 
 

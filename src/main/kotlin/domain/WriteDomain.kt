@@ -19,7 +19,7 @@ class WriteDomain(
             eventDetails = newTodo
         )
         todoListEventRepo.addEvent(newTodoEvent)
-        return todoClientView(newTodo)
+        return writeDomainTodoClientView(newTodo)
     }
 
     fun updateTodoName(todoId: String, updatedTodoName: String): TodoNameUpdate {
@@ -68,7 +68,7 @@ class WriteDomain(
         return LocalDateTime.now().toString()
     }
 
-    private fun todoClientView(todo: Todo): TodoClientView {
+    private fun writeDomainTodoClientView(todo: Todo): TodoClientView {
         return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
     }
 
