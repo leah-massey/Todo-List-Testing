@@ -21,10 +21,12 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
     val app: HttpHandler = routes(
         "/todos" bind GET to { request: Request ->
-            val todoStatus: String = request.query("status") ?: ""
+            val todoStatus: String? = request.query("status")
 
-            val todoList: List<TodoClientView> = if (todoStatus.isEmpty()) {
-                readDomain.getTodoListClientView()
+            val todoList: List<TodoClientView> = if (todoStatus == null) {
+                readDomain.getTodoListClientView(null)
+
+
             } else if (todoStatus == "DONE") {
                 readDomain.getTodoListByStatusDoneClientView()
             } else {
