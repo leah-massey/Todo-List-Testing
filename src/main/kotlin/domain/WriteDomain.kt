@@ -34,28 +34,47 @@ class WriteDomain(
         return updatedNameTodoEvent.eventDetails
     }
 
+//    fun markTodoAsDone(todoId: String): TodoStatusUpdate {
+//
+//        val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
+//            eventId = createID(),
+//            eventCreatedDate = timeStamp(),
+//            entityId = todoId,
+//            eventDetails = TodoStatusUpdate(id = todoId, status = Status.DONE)
+//        )
+//
+//        todoListEventRepo.addEvent(updatedStatusTodoEvent)
+//        return updatedStatusTodoEvent.eventDetails
+//    }
+
+//    fun markTodoAsNotDone(todoId: String): TodoStatusUpdate {
+//
+//        val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
+//            eventId = createID(),
+//            eventCreatedDate = timeStamp(),
+//            entityId = todoId,
+//            eventDetails = TodoStatusUpdate(id = todoId, status = Status.NOT_DONE)
+//        )
+//
+//        todoListEventRepo.addEvent(updatedStatusTodoEvent)
+//        return updatedStatusTodoEvent.eventDetails
+//    }
+
     fun markTodoAsDone(todoId: String): TodoStatusUpdate {
-
-        val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
-            eventId = createID(),
-            eventCreatedDate = timeStamp(),
-            entityId = todoId,
-            eventDetails = TodoStatusUpdate(id = todoId, status = Status.DONE)
-        )
-
-        todoListEventRepo.addEvent(updatedStatusTodoEvent)
-        return updatedStatusTodoEvent.eventDetails
+        return updateTodoStatus(Status.DONE, todoId)
     }
 
     fun markTodoAsNotDone(todoId: String): TodoStatusUpdate {
+        return updateTodoStatus(Status.NOT_DONE, todoId)
+    }
 
+    private fun updateTodoStatus(status: Status, todoId: String): TodoStatusUpdate {
         val updatedStatusTodoEvent = TodoStatusUpdatedEvent(
             eventId = createID(),
             eventCreatedDate = timeStamp(),
             entityId = todoId,
-            eventDetails = TodoStatusUpdate(id = todoId, status = Status.NOT_DONE)
+            eventDetails = TodoStatusUpdate(id = todoId, status = status)
         )
-
         todoListEventRepo.addEvent(updatedStatusTodoEvent)
         return updatedStatusTodoEvent.eventDetails
     }
