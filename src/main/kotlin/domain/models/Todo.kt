@@ -5,5 +5,11 @@ data class Todo(
     val createdTimestamp: String,
     var lastModifiedTimestamp: String,
     var name: String,
-    var status: String = "NOT_DONE"
+    var status: Status = Status.NOT_DONE
 )
+
+enum class Status {
+    DONE,
+    NOT_DONE
+}
+

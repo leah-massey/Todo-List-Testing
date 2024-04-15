@@ -20,8 +20,14 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
-    fun getTodoListByStatusClientView(status: String): List<TodoClientView> {
-        return getTodoListByStatus(status).map { todo ->
+    fun getTodoListByStatusDoneClientView(): List<TodoClientView> {
+        return getTodoListByStatusDone().map { todo ->
+            todoClientView(todo)
+        }
+    }
+
+    fun getTodoListByStatusNotDoneClientView(): List<TodoClientView> {
+        return getTodoListByStatusNotDone().map { todo ->
             todoClientView(todo)
         }
     }
@@ -36,17 +42,24 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
-    private fun getTodoListByStatus(status: String): List<Todo> {
+    private fun getTodoListByStatusDone(): List<Todo> {
         return getTodoList().filter { todo ->
-            todo.status == status
+            todo.status == Status.DONE
         }
     }
 
+    private fun getTodoListByStatusNotDone(): List<Todo> {
+        return getTodoList().filter { todo ->
+            todo.status == Status.NOT_DONE
+        }
+    }
+
+    private fun todoClientView(todo: Todo): TodoClientView {
+        return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
+    }
 }
 
 
 // where should this be kept if it is used by both readDomain and writeDomain?
-fun todoClientView(todo: Todo): TodoClientView {
-    return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
-}
+
 
