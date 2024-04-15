@@ -53,11 +53,13 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
             todo.status == Status.NOT_DONE
         }
     }
+
+    private fun todoClientView(todo: Todo): TodoClientView {
+        return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
+    }
 }
 
 
 // where should this be kept if it is used by both readDomain and writeDomain?
-fun todoClientView(todo: Todo): TodoClientView {
-    return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
-}
+
 

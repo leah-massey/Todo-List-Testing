@@ -68,4 +68,8 @@ class WriteDomain(
         return LocalDateTime.now().toString()
     }
 
+    private fun todoClientView(todo: Todo): TodoClientView {
+        return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
+    }
+
 }
