@@ -25,8 +25,10 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
             val todoList: List<TodoClientView> = if (todoStatus.isEmpty()) {
                 readDomain.getTodoListClientView()
+            } else if (todoStatus == "DONE") {
+                readDomain.getTodoListByStatusDoneClientView()
             } else {
-                readDomain.getTodoListByStatusClientView(todoStatus)
+                readDomain.getTodoListByStatusNotDoneClientView()
             }
 
             val todoListAsJsonString: String = mapper.writeValueAsString(todoList)

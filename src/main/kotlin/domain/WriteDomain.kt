@@ -40,7 +40,7 @@ class WriteDomain(
             eventId = createID(),
             eventCreatedDate = timeStamp(),
             entityId = todoId,
-            eventDetails = TodoStatusUpdate(id = todoId, status = "DONE")
+            eventDetails = TodoStatusUpdate(id = todoId, status = Status.DONE)
         )
 
         todoListEventRepo.addEvent(updatedStatusTodoEvent)
@@ -53,7 +53,7 @@ class WriteDomain(
             eventId = createID(),
             eventCreatedDate = timeStamp(),
             entityId = todoId,
-            eventDetails = TodoStatusUpdate(id = todoId, status = "NOT_DONE")
+            eventDetails = TodoStatusUpdate(id = todoId, status = Status.NOT_DONE)
         )
 
         todoListEventRepo.addEvent(updatedStatusTodoEvent)
