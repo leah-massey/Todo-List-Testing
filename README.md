@@ -8,7 +8,7 @@ Each update made by the user is recorded using Event Sourcing.
 ### To note: 
 This is a learning project, with some comments left in for personal reference / feedback
 
-The focus of the project was to understand event sourcing. The project was built without the use of TDD, for reasons of speed, and no testing has been done. This is not best practise but for the focus of this exercise is deemed acceptable. 
+The focus of the project is to add comprehensive testing to a previously built Todo project. The original project was built without the use of TDD, for reasons of speed, and no testing had been done.  
 
 For similar reasons, there are no architecture diagrams for this project, although [Endpoints.md](src/resources/Endpoints.md) can be viewed to see expected outcomes.
 
