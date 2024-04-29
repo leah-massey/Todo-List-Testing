@@ -25,7 +25,7 @@ class ReadDomainTest {
 
 
     @Test
-    fun `a single todo consisting of id, name and status is returned`() {
+    fun `when an id is given, only the relevant todo (consisting of id, name and status) is returned`() {
         val mockEventRepo: TodoListEventRepo = mock(TodoListEventRepo::class.java)
         `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.DONE )))
         val readDomain = ReadDomain(mockEventRepo)
