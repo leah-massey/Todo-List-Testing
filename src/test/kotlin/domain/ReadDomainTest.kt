@@ -15,9 +15,24 @@ class ReadDomainTest {
     fun `only the id, name and status of items in a todo List is returned`() {
         val mockEventRepo: TodoListEventRepo = mock(TodoListEventRepo::class.java)
         `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.DONE )))
-        val underTest = ReadDomain(mockEventRepo)
+        val readDomain = ReadDomain(mockEventRepo)
 
         val expected: List<TodoClientView> = listOf(TodoClientView(id = "123", name = "wash car", status = Status.NOT_DONE), TodoClientView(id = "456", name ="feed cat", status = Status.DONE))
-        val actual: List<TodoClientView> = underTest.getTodoListClientView(null)
+        val actual: List<TodoClientView> = readDomain.getTodoListClientView(null)
+
+        assertEquals(expected, actual)
+    }
+
+
+    @Test
+    fun `a single todo consisting of id, name and status is returned`() {
+        val mockEventRepo: TodoListEventRepo = mock(TodoListEventRepo::class.java)
+        `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.DONE )))
+        val readDomain = ReadDomain(mockEventRepo)
+
+        val expected: List<TodoClientView> = listOf(TodoClientView(id = "123", name = "wash car", status = Status.NOT_DONE))
+        val actual: List<TodoClientView> = readDomain.getTodoListClientView("123")
+
+        assertEquals(expected, actual)
     }
 }
