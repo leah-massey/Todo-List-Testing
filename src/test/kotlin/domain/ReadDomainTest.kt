@@ -1,6 +1,5 @@
 package domain
 
-import adapters.TodoListEventFileRepo
 import domain.models.Status
 import domain.models.Todo
 import domain.models.TodoClientView
@@ -17,12 +16,11 @@ class ReadDomainTest {
         `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.DONE )))
         val readDomain = ReadDomain(mockEventRepo)
 
-        val expected: List<TodoClientView> = listOf(TodoClientView(id = "123", name = "wash car", status = Status.NOT_DONE), TodoClientView(id = "456", name ="feed cat", status = Status.DONE))
-        val actual: List<TodoClientView> = readDomain.getTodoListClientView(null)
+        val expected: List<TodoClientView.FullClientView> = listOf(TodoClientView.FullClientView(id = "123", name = "wash car", status = Status.NOT_DONE), TodoClientView.FullClientView(id = "456", name ="feed cat", status = Status.DONE))
+        val actual: List<TodoClientView.FullClientView> = readDomain.getTodoListClientView(null)
 
         assertEquals(expected, actual)
     }
-
 
     @Test
     fun `when an id is given, only the relevant todo (consisting of id, name and status) is returned`() {
@@ -30,8 +28,20 @@ class ReadDomainTest {
         `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.DONE )))
         val readDomain = ReadDomain(mockEventRepo)
 
-        val expected: List<TodoClientView> = listOf(TodoClientView(id = "123", name = "wash car", status = Status.NOT_DONE))
-        val actual: List<TodoClientView> = readDomain.getTodoListClientView("123")
+        val expected: List<TodoClientView.FullClientView> = listOf(TodoClientView.FullClientView(id = "123", name = "wash car", status = Status.NOT_DONE))
+        val actual: List<TodoClientView.FullClientView> = readDomain.getTodoListClientView("123")
+
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun `only the id and name of todos is returned when filtering by status`() {
+        val mockEventRepo: TodoListEventRepo = mock(TodoListEventRepo::class.java)
+        `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE )))
+        val readDomain = ReadDomain(mockEventRepo)
+
+        val expected: List<TodoClientView.FilteredByStatus> = listOf(TodoClientView.FilteredByStatus(id = "123", name = "wash car"))
+        val actual: List<TodoClientView.FilteredByStatus> = readDomain.getTodoListByStatusNotDoneClientView()
 
         assertEquals(expected, actual)
     }
