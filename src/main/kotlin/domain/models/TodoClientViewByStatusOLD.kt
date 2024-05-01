@@ -1,6 +1,6 @@
 package domain.models
 
-data class TodoClientViewByStatus(
+data class TodoClientViewByStatusOLD(
     val id: String,
     val name: String,
     )

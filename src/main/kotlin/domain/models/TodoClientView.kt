@@ -1,7 +1,17 @@
 package domain.models
 
-data class TodoClientView(
-    val id: String,
-    val name: String,
-    val status: Status
-)
+sealed class TodoClientView {
+
+    data class FullClientView(
+        val id: String,
+        val name: String,
+        val status: Status
+    )
+
+    data class FilteredByStatus(
+        val id: String,
+        val name: String,
+    )
+}
+
+

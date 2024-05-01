@@ -6,7 +6,7 @@ import ports.TodoListEventRepo
 
 class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
 
-    fun getTodoListClientView(todoId: String?): List<TodoClientView> {
+    fun getTodoListClientView(todoId: String?): List<TodoClientView.FullClientView> {
         if (todoId == null) {
             return getTodoList().map { todo ->
                 readDomainTodoClientView(todo)
@@ -20,15 +20,15 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
-    fun getTodoListByStatusDoneClientView(): List<TodoClientView> {
+    fun getTodoListByStatusDoneClientView(): List<TodoClientView.FilteredByStatus> {
         return getTodoListByStatusDone().map { todo ->
-            readDomainTodoClientView(todo)
+            readDomainTodoClientViewByStatus(todo)
         }
     }
 
-    fun getTodoListByStatusNotDoneClientView(): List<TodoClientView> {
+    fun getTodoListByStatusNotDoneClientView(): List<TodoClientView.FilteredByStatus> {
         return getTodoListByStatusNotDone().map { todo ->
-            readDomainTodoClientView(todo)
+            readDomainTodoClientViewByStatus(todo)
         }
     }
 
@@ -54,8 +54,12 @@ class ReadDomain(val todoListEventRepo: TodoListEventRepo) {
         }
     }
 
-    private fun readDomainTodoClientView(todo: Todo): TodoClientView {
-        return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
+    private fun readDomainTodoClientView(todo: Todo): TodoClientView.FullClientView {
+        return TodoClientView.FullClientView(id = todo.id, name = todo.name, status = todo.status)
+    }
+
+    private fun readDomainTodoClientViewByStatus(todo: Todo): TodoClientView.FilteredByStatus {
+        return TodoClientView.FilteredByStatus(id = todo.id, name = todo.name)
     }
 }
 

@@ -8,10 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import domain.ReadDomain
 import domain.WriteDomain
-import domain.models.Todo
-import domain.models.TodoClientView
-import domain.models.TodoNameUpdate
-import domain.models.TodoStatusUpdate
+import domain.models.*
 import org.http4k.core.*
 import org.http4k.core.Status.Companion.BAD_REQUEST
 import org.http4k.core.Status.Companion.CREATED
@@ -22,18 +19,22 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
     val app: HttpHandler = routes(
         "/todos" bind GET to { request: Request ->
             val todoStatus: String? = request.query("status")
+            var todoListAsJsonString: String = ""
 
-            val todoList: List<TodoClientView> = if (todoStatus == null) {
-                readDomain.getTodoListClientView(null)
-
-
+            if (todoStatus == null) {
+                val todoList: List<TodoClientView.FullClientView> = readDomain.getTodoListClientView(null)
+                todoListAsJsonString = mapper.writeValueAsString(todoList)
             } else if (todoStatus == "DONE") {
-                readDomain.getTodoListByStatusDoneClientView()
-            } else {
-                readDomain.getTodoListByStatusNotDoneClientView()
+                val todoListStatusDone: List<TodoClientView.FilteredByStatus> =
+                    readDomain.getTodoListByStatusDoneClientView()
+                todoListAsJsonString = mapper.writeValueAsString(todoListStatusDone)
+            } else if (todoStatus == "NOT_DONE") {
+                val todoListStatusNotDone: List<TodoClientView.FilteredByStatus> =
+                    readDomain.getTodoListByStatusNotDoneClientView()
+                todoListAsJsonString = mapper.writeValueAsString(todoListStatusNotDone)
             }
+            // TODO handle errors
 
-            val todoListAsJsonString: String = mapper.writeValueAsString(todoList)
             Response(OK)
                 .body(todoListAsJsonString)
                 .header("content-type", "application/json")
@@ -67,6 +68,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                             .body(updatedTodoAsJson)
                             .header("Content-Type", "application/json")
                     }
+
                     todoStatusUpdate == "DONE" -> {
                         val updatedTodoStatusDone: TodoStatusUpdate = writeDomain.markTodoAsDone(todoId)
                         val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
@@ -74,6 +76,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                             .body(updatedTodoAsJson)
                             .header("Content-Type", "application/json")
                     }
+
                     todoStatusUpdate == "NOT_DONE" -> {
                         val updatedTodoStatusDone: TodoStatusUpdate = writeDomain.markTodoAsNotDone(todoId)
                         val updatedTodoAsJson = mapper.writeValueAsString(updatedTodoStatusDone)
@@ -81,6 +84,7 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
                             .body(updatedTodoAsJson)
                             .header("Content-Type", "application/json")
                     }
+
                     else -> Response(BAD_REQUEST)
                 }
             return@bind response
@@ -88,14 +92,13 @@ class HttpApi(readDomain: ReadDomain, writeDomain: WriteDomain) {
 
         "/todos/{todoId}" bind GET to { request: Request ->
             val todoId: String = request.path("todoId")!! // handle errors if id is not valid
-            val todoItem: List<TodoClientView> = readDomain.getTodoListClientView(todoId)
+            val todoItem: List<TodoClientView.FullClientView> = readDomain.getTodoListClientView(todoId)
             val toDoListAsJsonString: String = mapper.writeValueAsString(todoItem)
             Response(OK)
                 .body(toDoListAsJsonString)
                 .header("content-type", "application/json")
         },
     )
-
     private val mapper: ObjectMapper = jacksonObjectMapper()
 }
 

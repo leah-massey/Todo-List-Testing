@@ -8,7 +8,7 @@ import java.util.*
 class WriteDomain(
     val todoListEventRepo: TodoListEventRepo,
 ) {
-    fun createNewTodo(todoName: String): TodoClientView {
+    fun createNewTodo(todoName: String): TodoClientView.FullClientView {
         val newTodo =
             Todo(id = createID(), createdTimestamp = timeStamp(), lastModifiedTimestamp = timeStamp(), name = todoName)
 
@@ -87,8 +87,8 @@ class WriteDomain(
         return LocalDateTime.now().toString()
     }
 
-    private fun writeDomainTodoClientView(todo: Todo): TodoClientView {
-        return TodoClientView(id = todo.id, name = todo.name, status = todo.status)
+    private fun writeDomainTodoClientView(todo: Todo): TodoClientView.FullClientView {
+        return TodoClientView.FullClientView(id = todo.id, name = todo.name, status = todo.status)
     }
 
 }
