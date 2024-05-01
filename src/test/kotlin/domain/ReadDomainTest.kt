@@ -70,6 +70,15 @@ class ReadDomainTest {
         assertEquals(expected, actual)
     }
 
-    //an empty list - no dones
-    // and empty list
+    @Test
+    fun `when no items are done, searching by status DONE returns and empty list`() {
+        val mockEventRepo: TodoListEventRepo = mock(TodoListEventRepo::class.java)
+        `when` (mockEventRepo.getTodoList()).thenReturn(listOf(Todo("123", createdTimestamp = "01/02/24", lastModifiedTimestamp ="01/02/24", name = "wash car", status = Status.NOT_DONE ), Todo("456", createdTimestamp = "02/02/24", lastModifiedTimestamp ="02/02/24", name = "feed cat", status = Status.NOT_DONE )))
+        val readDomain = ReadDomain(mockEventRepo)
+
+        val expected: List<TodoClientView.FilteredByStatus> = emptyList()
+        val actual: List<TodoClientView.FilteredByStatus> = readDomain.getTodoListByStatusDoneClientView()
+
+        assertEquals(expected, actual)
+    }
 }
